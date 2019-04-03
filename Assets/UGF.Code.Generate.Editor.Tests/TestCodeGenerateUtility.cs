@@ -13,7 +13,7 @@ namespace UGF.Code.Generate.Editor.Tests
         public void Test()
         {
             CSharpCompilation compilation = CodeAnalysisEditorUtility.ProjectCompilation;
-            PropertyDeclarationSyntax property = CodeGenerateEditorUtility.PropertyDeclaration(compilation, "Property", typeof(string), Accessibility.Public);
+            PropertyDeclarationSyntax property = CodeGenerateEditorUtility.AutoPropertyDeclaration(compilation, "Property", typeof(string), Accessibility.Public);
 
             Debug.Log(property.NormalizeWhitespace().ToFullString());
         }
