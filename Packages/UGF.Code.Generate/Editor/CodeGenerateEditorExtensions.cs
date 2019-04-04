@@ -1,3 +1,5 @@
+using System;
+using System.Collections.Generic;
 using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.CSharp;
 using Microsoft.CodeAnalysis.CSharp.Syntax;
@@ -9,6 +11,9 @@ namespace UGF.Code.Generate.Editor
     {
         public static PropertyDeclarationSyntax AutoPropertyDeclaration(this SyntaxGenerator generator, string name, SyntaxNode returnType, Accessibility accessibility)
         {
+            if (name == null) throw new ArgumentNullException(nameof(name));
+            if (returnType == null) throw new ArgumentNullException(nameof(returnType));
+
             var property = (PropertyDeclarationSyntax)generator.PropertyDeclaration(name, returnType, accessibility);
             AccessorListSyntax accessorList = SyntaxFactory.AccessorList();
 
@@ -25,6 +30,16 @@ namespace UGF.Code.Generate.Editor
             property = property.ReplaceNode(property.AccessorList, accessorList);
 
             return property;
+        }
+
+        public static SyntaxNode Attribute(this SyntaxGenerator generator, CSharpCompilation compilation, Type type, IEnumerable<SyntaxNode> arguments = null)
+        {
+            if (compilation == null) throw new ArgumentNullException(nameof(compilation));
+            if (type == null) throw new ArgumentNullException(nameof(type));
+
+            INamedTypeSymbol name = compilation.GetTypeByMetadataName(type.FullName);
+
+            return generator.Attribute(generator.TypeExpression(name), arguments);
         }
     }
 }
