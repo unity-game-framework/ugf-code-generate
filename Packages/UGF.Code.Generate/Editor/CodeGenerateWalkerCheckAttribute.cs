@@ -17,18 +17,18 @@ namespace UGF.Code.Generate.Editor
             TypeSymbol = typeSymbol ?? throw new ArgumentNullException(nameof(typeSymbol));
         }
 
+        protected virtual bool CheckAttribute(AttributeSyntax node)
+        {
+            return SemanticModel.GetTypeInfo(node).ConvertedType.Equals(TypeSymbol);
+        }
+
         public override void VisitAttribute(AttributeSyntax node)
         {
             base.VisitAttribute(node);
 
-            if (!Result)
+            if (!Result && CheckAttribute(node))
             {
-                ITypeSymbol typeSymbol = SemanticModel.GetTypeInfo(node).ConvertedType;
-
-                if (typeSymbol.Equals(TypeSymbol))
-                {
-                    Result = true;
-                }
+                Result = true;
             }
         }
     }

@@ -1,0 +1,21 @@
+namespace Test
+{
+    /// <summary>
+    ///
+    /// </summary>
+    public class Target
+    {
+    }
+
+    public class Target2
+    {
+    }
+
+
+    /// <summary>
+    ///
+    /// </summary>
+    public class Target3
+    {
+    }
+}

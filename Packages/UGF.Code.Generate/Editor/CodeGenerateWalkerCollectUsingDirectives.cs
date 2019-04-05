@@ -8,7 +8,7 @@ namespace UGF.Code.Generate.Editor
     public class CodeGenerateWalkerCollectUsingDirectives : CSharpSyntaxWalker
     {
         public List<UsingDirectiveSyntax> UsingDirectives { get; } = new List<UsingDirectiveSyntax>();
-        
+
         public CodeGenerateWalkerCollectUsingDirectives(SyntaxWalkerDepth depth = SyntaxWalkerDepth.Node) : base(depth)
         {
         }
@@ -16,7 +16,7 @@ namespace UGF.Code.Generate.Editor
         public override void VisitUsingDirective(UsingDirectiveSyntax node)
         {
             base.VisitUsingDirective(node);
-            
+
             UsingDirectives.Add(node);
         }
     }

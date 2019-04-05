@@ -10,13 +10,13 @@ namespace UGF.Code.Generate.Editor
     {
         public static T AddGeneratedCodeLeadingTrivia<T>(T node) where T : SyntaxNode
         {
-            return node.WithLeadingTrivia(SyntaxFactory.Comment("// THIS IS GENERATED CODE. DO NOT EDIT."),
+            return node.WithLeadingTrivia(SyntaxFactory.Comment("// THIS IS A GENERATED CODE. DO NOT EDIT."),
                 SyntaxFactory.CarriageReturnLineFeed,
                 SyntaxFactory.Comment("// ReSharper disable all"),
                 SyntaxFactory.CarriageReturnLineFeed,
                 SyntaxFactory.CarriageReturnLineFeed);
         }
-        
+
         public static HashSet<string> UsingDirectivesCollectUniqueNames(IEnumerable<UsingDirectiveSyntax> directives)
         {
             if (directives == null) throw new ArgumentNullException(nameof(directives));

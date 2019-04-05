@@ -1,0 +1,24 @@
+namespace Test
+{
+    /// <summary>
+    ///
+    /// </summary>
+    [global::NUnit.Framework.TestAttribute]
+    public class Target
+    {
+    }
+
+    [global::NUnit.Framework.TestAttribute]
+    public class Target2
+    {
+    }
+
+
+    /// <summary>
+    ///
+    /// </summary>
+    [global::NUnit.Framework.TestAttribute]
+    public class Target3
+    {
+    }
+}
