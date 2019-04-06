@@ -10,7 +10,7 @@ namespace UGF.Code.Generate.Editor
         {
         }
 
-        public override SyntaxNode VisitAttributeList(AttributeListSyntax node)
+        protected virtual SyntaxNode Apply(SyntaxNode node)
         {
             SyntaxTriviaList trivia = SyntaxFactory.TriviaList(SyntaxFactory.CarriageReturnLineFeed);
 
@@ -26,9 +26,12 @@ namespace UGF.Code.Generate.Editor
                 }
             }
 
-            node = node.WithTrailingTrivia(trivia);
+            return node.WithTrailingTrivia(trivia);
+        }
 
-            return base.VisitAttributeList(node);
+        public override SyntaxNode VisitAttributeList(AttributeListSyntax node)
+        {
+            return Apply(base.VisitAttributeList(node));
         }
     }
 }

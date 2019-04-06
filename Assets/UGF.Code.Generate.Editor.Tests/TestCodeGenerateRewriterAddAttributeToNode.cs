@@ -4,7 +4,6 @@ using Microsoft.CodeAnalysis.CSharp;
 using Microsoft.CodeAnalysis.Editing;
 using NUnit.Framework;
 using UGF.Code.Analysis.Editor;
-using UnityEngine;
 
 namespace UGF.Code.Generate.Editor.Tests
 {
@@ -32,12 +31,12 @@ namespace UGF.Code.Generate.Editor.Tests
             SyntaxNode node = SyntaxFactory.ParseSyntaxTree(sourceWithout).GetRoot();
 
             var rewriter = new CodeGenerateRewriterAddAttributeToNode(CodeAnalysisEditorUtility.Generator, attribute, syntaxNode => syntaxNode.Kind() == SyntaxKind.ClassDeclaration);
+            var format = new CodeGenerateRewriterFormatAttributeList();
 
             node = rewriter.Visit(node);
+            node = format.Visit(node);
 
             string result = node.ToFullString();
-
-            Debug.Log(result);
 
             Assert.AreEqual(sourceWith, result);
         }

@@ -118,10 +118,5 @@ namespace UGF.Code.Generate.Editor
         {
             return Apply(base.VisitParameter(node));
         }
-
-        public override SyntaxNode VisitCrefParameter(CrefParameterSyntax node)
-        {
-            return Apply(base.VisitCrefParameter(node));
-        }
     }
 }

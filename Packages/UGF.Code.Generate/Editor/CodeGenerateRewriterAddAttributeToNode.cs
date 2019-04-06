@@ -24,9 +24,9 @@ namespace UGF.Code.Generate.Editor
             return Validate(node) ? AddAttribute(node) : node;
         }
 
-        protected virtual SyntaxNode AddAttribute(SyntaxNode node)
+        protected virtual SyntaxNode AddAttribute(SyntaxNode declaration)
         {
-            return Generator.AddAttributes(node, Attribute);
+            return Generator.AddAttributes(declaration, Attribute);
         }
 
         public override SyntaxNode VisitClassDeclaration(ClassDeclarationSyntax node)
@@ -117,11 +117,6 @@ namespace UGF.Code.Generate.Editor
         public override SyntaxNode VisitParameter(ParameterSyntax node)
         {
             return Apply(base.VisitParameter(node));
-        }
-
-        public override SyntaxNode VisitCrefParameter(CrefParameterSyntax node)
-        {
-            return Apply(base.VisitCrefParameter(node));
         }
     }
 }

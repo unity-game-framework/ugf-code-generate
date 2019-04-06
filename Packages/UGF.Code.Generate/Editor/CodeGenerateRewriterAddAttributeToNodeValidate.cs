@@ -2,5 +2,5 @@ using Microsoft.CodeAnalysis;
 
 namespace UGF.Code.Generate.Editor
 {
-    public delegate bool CodeGenerateRewriterAddAttributeToNodeValidate(SyntaxNode node);
+    public delegate bool CodeGenerateRewriterAddAttributeToNodeValidate(SyntaxNode declaration);
 }
