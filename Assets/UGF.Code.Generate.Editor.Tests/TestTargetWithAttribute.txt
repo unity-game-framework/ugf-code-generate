@@ -11,6 +11,10 @@ namespace Test
     [global::NUnit.Framework.TestAttribute]
     public class Target2
     {
+        [global::NUnit.Framework.TestAttribute]
+        public class Nested
+        {
+        }
     }
 
 

@@ -9,6 +9,9 @@ namespace Test
 
     public class Target2
     {
+        public class Nested
+        {
+        }
     }
 
 
