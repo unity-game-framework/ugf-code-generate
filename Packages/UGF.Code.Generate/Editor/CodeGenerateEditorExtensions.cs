@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.CSharp;
 using Microsoft.CodeAnalysis.CSharp.Syntax;
@@ -9,12 +10,12 @@ namespace UGF.Code.Generate.Editor
 {
     public static class CodeGenerateEditorExtensions
     {
-        public static PropertyDeclarationSyntax AutoPropertyDeclaration(this SyntaxGenerator generator, string name, SyntaxNode returnType, Accessibility accessibility)
+        public static PropertyDeclarationSyntax AutoPropertyDeclaration(this SyntaxGenerator generator, string name, SyntaxNode type, Accessibility accessibility = Accessibility.NotApplicable, DeclarationModifiers modifiers = default(DeclarationModifiers))
         {
             if (name == null) throw new ArgumentNullException(nameof(name));
-            if (returnType == null) throw new ArgumentNullException(nameof(returnType));
+            if (type == null) throw new ArgumentNullException(nameof(type));
 
-            var property = (PropertyDeclarationSyntax)generator.PropertyDeclaration(name, returnType, accessibility);
+            var property = (PropertyDeclarationSyntax)generator.PropertyDeclaration(name, type, accessibility, modifiers);
             AccessorListSyntax accessorList = SyntaxFactory.AccessorList();
 
             for (int i = 0; i < property.AccessorList.Accessors.Count; i++)
@@ -32,14 +33,56 @@ namespace UGF.Code.Generate.Editor
             return property;
         }
 
-        public static SyntaxNode Attribute(this SyntaxGenerator generator, CSharpCompilation compilation, Type type, IEnumerable<SyntaxNode> arguments = null)
+        public static bool TryGetTypeByMetadataName(this CSharpCompilation compilation, Type type, out INamedTypeSymbol typeSymbol)
         {
-            if (compilation == null) throw new ArgumentNullException(nameof(compilation));
-            if (type == null) throw new ArgumentNullException(nameof(type));
+            typeSymbol = compilation.GetTypeByMetadataName(type.FullName);
 
-            INamedTypeSymbol name = compilation.GetTypeByMetadataName(type.FullName);
+            if (typeSymbol == null)
+            {
+                if (type.IsGenericType)
+                {
+                    Type genericDefinition = type.GetGenericTypeDefinition();
+                    Type[] genericArguments = type.GetGenericArguments();
 
-            return generator.Attribute(generator.TypeExpression(name), arguments);
+                    return TryGetGenericTypeByMetadataName(compilation, genericDefinition.FullName, genericArguments.Select(x => x.FullName), out typeSymbol);
+                }
+
+                return false;
+            }
+
+            return true;
+        }
+
+        public static bool TryGetGenericTypeByMetadataName(this CSharpCompilation compilation, string genericDefinition, IEnumerable<string> arguments, out INamedTypeSymbol typeSymbol)
+        {
+            INamedTypeSymbol genericDefinitionTypeSymbol = compilation.GetTypeByMetadataName(genericDefinition);
+
+            if (genericDefinitionTypeSymbol != null)
+            {
+                var argumentTypeSymbols = new ITypeSymbol[arguments.Count()];
+                int index = 0;
+
+                foreach (string argument in arguments)
+                {
+                    INamedTypeSymbol argumentTypeSymbol = compilation.GetTypeByMetadataName(argument);
+
+                    if (argumentTypeSymbol != null)
+                    {
+                        argumentTypeSymbols[index++] = argumentTypeSymbol;
+                    }
+                    else
+                    {
+                        typeSymbol = null;
+                        return false;
+                    }
+                }
+
+                typeSymbol = genericDefinitionTypeSymbol.Construct(argumentTypeSymbols);
+                return true;
+            }
+
+            typeSymbol = null;
+            return false;
         }
     }
 }

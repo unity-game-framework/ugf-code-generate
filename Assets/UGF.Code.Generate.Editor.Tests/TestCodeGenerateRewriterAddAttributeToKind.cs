@@ -27,7 +27,8 @@ namespace UGF.Code.Generate.Editor.Tests
             string sourceWith = File.ReadAllText(m_targetWithAttribute);
             string sourceWithout = File.ReadAllText(m_targetWithoutAttribute);
 
-            SyntaxNode attribute = m_generator.Attribute(m_compilation, typeof(TestAttribute));
+            ITypeSymbol typeSymbol = m_compilation.GetTypeByMetadataName(typeof(TestAttribute).FullName);
+            SyntaxNode attribute = m_generator.Attribute(m_generator.TypeExpression(typeSymbol));
             SyntaxNode node = SyntaxFactory.ParseSyntaxTree(sourceWithout).GetRoot();
 
             var rewriter = new CodeGenerateRewriterAddAttributeToKind(CodeAnalysisEditorUtility.Generator, attribute, SyntaxKind.ClassDeclaration);
