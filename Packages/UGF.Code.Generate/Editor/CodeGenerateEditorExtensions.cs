@@ -35,6 +35,8 @@ namespace UGF.Code.Generate.Editor
 
         public static bool TryGetTypeByMetadataName(this CSharpCompilation compilation, Type type, out INamedTypeSymbol typeSymbol)
         {
+            if (type == null) throw new ArgumentNullException(nameof(type));
+
             typeSymbol = compilation.GetTypeByMetadataName(type.FullName);
 
             if (typeSymbol == null)
@@ -55,6 +57,9 @@ namespace UGF.Code.Generate.Editor
 
         public static bool TryGetGenericTypeByMetadataName(this CSharpCompilation compilation, string genericDefinition, IEnumerable<string> arguments, out INamedTypeSymbol typeSymbol)
         {
+            if (genericDefinition == null) throw new ArgumentNullException(nameof(genericDefinition));
+            if (arguments == null) throw new ArgumentNullException(nameof(arguments));
+
             INamedTypeSymbol genericDefinitionTypeSymbol = compilation.GetTypeByMetadataName(genericDefinition);
 
             if (genericDefinitionTypeSymbol != null)

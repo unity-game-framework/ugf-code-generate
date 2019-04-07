@@ -10,6 +10,8 @@ namespace UGF.Code.Generate.Editor
     {
         public static T AddGeneratedCodeLeadingTrivia<T>(T node) where T : SyntaxNode
         {
+            if (node == null) throw new ArgumentNullException(nameof(node));
+
             return node.WithLeadingTrivia(SyntaxFactory.Comment("// THIS IS A GENERATED CODE. DO NOT EDIT."),
                 SyntaxFactory.CarriageReturnLineFeed,
                 SyntaxFactory.Comment("// ReSharper disable all"),
