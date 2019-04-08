@@ -1,0 +1,33 @@
+namespace Test
+{
+    [global::NUnit.Framework.TestAttribute] public int Value;
+
+    /// <summary>
+    ///
+    /// </summary>
+[global::NUnit.Framework.TestAttribute]
+    public class Target
+    {
+    }
+
+    [global::NUnit.Framework.TestAttribute]public class Target2
+    {
+
+        [global::NUnit.Framework.TestAttribute]
+
+        public class Nested
+        {
+        }
+    }
+
+
+    /// <summary>
+    ///
+    /// </summary>
+
+    [global::NUnit.Framework.TestAttribute]
+
+    public class Target3
+    {
+    }
+}

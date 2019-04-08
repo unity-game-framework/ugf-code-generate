@@ -12,21 +12,26 @@ namespace UGF.Code.Generate.Editor
 
         protected virtual SyntaxNode Apply(SyntaxNode node)
         {
-            SyntaxTriviaList trivia = SyntaxFactory.TriviaList(SyntaxFactory.CarriageReturnLineFeed);
-
-            foreach (SyntaxTrivia syntaxTrivia in node.GetLeadingTrivia().Reverse())
+            if (node.GetTrailingTrivia().FullSpan.Length == 0)
             {
-                if (syntaxTrivia.IsKind(SyntaxKind.WhitespaceTrivia))
+                SyntaxTriviaList trivia = SyntaxFactory.TriviaList(SyntaxFactory.CarriageReturnLineFeed);
+
+                foreach (SyntaxTrivia syntaxTrivia in node.GetLeadingTrivia().Reverse())
                 {
-                    trivia = trivia.Add(syntaxTrivia);
+                    if (syntaxTrivia.IsKind(SyntaxKind.WhitespaceTrivia))
+                    {
+                        trivia = trivia.Add(syntaxTrivia);
+                    }
+                    else
+                    {
+                        break;
+                    }
                 }
-                else
-                {
-                    break;
-                }
+
+                node = node.WithTrailingTrivia(trivia);
             }
 
-            return node.WithTrailingTrivia(trivia);
+            return node;
         }
 
         public override SyntaxNode VisitAttributeList(AttributeListSyntax node)
