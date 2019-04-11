@@ -12,6 +12,7 @@ namespace UGF.Code.Generate.Editor
     {
         public static PropertyDeclarationSyntax AutoPropertyDeclaration(this SyntaxGenerator generator, string name, SyntaxNode type, Accessibility accessibility = Accessibility.NotApplicable, DeclarationModifiers modifiers = default(DeclarationModifiers))
         {
+            if (generator == null) throw new ArgumentNullException(nameof(generator));
             if (name == null) throw new ArgumentNullException(nameof(name));
             if (type == null) throw new ArgumentNullException(nameof(type));
 
@@ -35,6 +36,7 @@ namespace UGF.Code.Generate.Editor
 
         public static bool TryGetTypeByMetadataName(this CSharpCompilation compilation, Type type, out INamedTypeSymbol typeSymbol)
         {
+            if (compilation == null) throw new ArgumentNullException(nameof(compilation));
             if (type == null) throw new ArgumentNullException(nameof(type));
 
             typeSymbol = compilation.GetTypeByMetadataName(type.FullName);
@@ -57,6 +59,7 @@ namespace UGF.Code.Generate.Editor
 
         public static bool TryGetGenericTypeByMetadataName(this CSharpCompilation compilation, string genericDefinition, IEnumerable<string> arguments, out INamedTypeSymbol typeSymbol)
         {
+            if (compilation == null) throw new ArgumentNullException(nameof(compilation));
             if (genericDefinition == null) throw new ArgumentNullException(nameof(genericDefinition));
             if (arguments == null) throw new ArgumentNullException(nameof(arguments));
 
