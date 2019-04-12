@@ -7,4 +7,6 @@ public class Container
         get;
         set;
     }
+
+    public global::System.Collections.Generic.List<int> ListValue;
 }

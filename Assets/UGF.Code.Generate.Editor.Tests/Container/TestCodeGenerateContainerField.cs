@@ -15,7 +15,7 @@ namespace UGF.Code.Generate.Editor.Tests.Container
         {
             SyntaxGenerator generator = CodeAnalysisEditorUtility.Generator;
 
-            var field = new CodeGenerateContainerField("Field", generator.TypeExpression(SpecialType.System_Int32));
+            var field = new CodeGenerateContainerField("Field", "int");
 
             SyntaxNode node = field.Generate(generator);
 
@@ -32,7 +32,7 @@ namespace UGF.Code.Generate.Editor.Tests.Container
             SyntaxGenerator generator = CodeAnalysisEditorUtility.Generator;
 
             LiteralExpressionSyntax initializer = SyntaxFactory.LiteralExpression(SyntaxKind.NumericLiteralExpression, SyntaxFactory.Literal(10));
-            var field = new CodeGenerateContainerField("Field", generator.TypeExpression(SpecialType.System_Int32), initializer);
+            var field = new CodeGenerateContainerField("Field", "int", initializer);
 
             SyntaxNode node = field.Generate(generator);
 
@@ -48,7 +48,7 @@ namespace UGF.Code.Generate.Editor.Tests.Container
         {
             SyntaxGenerator generator = CodeAnalysisEditorUtility.Generator;
 
-            var field = new CodeGenerateContainerField("Field", generator.TypeExpression(SpecialType.System_Int32), null, true);
+            var field = new CodeGenerateContainerField("Field", "int", null, true);
 
             SyntaxNode node = field.Generate(generator);
 
@@ -70,7 +70,7 @@ namespace UGF.Code.Generate.Editor.Tests.Container
             SyntaxGenerator generator = CodeAnalysisEditorUtility.Generator;
 
             LiteralExpressionSyntax initializer = SyntaxFactory.LiteralExpression(SyntaxKind.NumericLiteralExpression, SyntaxFactory.Literal(10));
-            var field = new CodeGenerateContainerField("Field", generator.TypeExpression(SpecialType.System_Int32), initializer, true);
+            var field = new CodeGenerateContainerField("Field", "int", initializer, true);
 
             SyntaxNode node = field.Generate(generator);
 
