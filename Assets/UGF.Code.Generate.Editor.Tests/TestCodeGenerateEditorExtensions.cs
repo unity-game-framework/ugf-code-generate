@@ -24,14 +24,17 @@ namespace UGF.Code.Generate.Editor.Tests
         [Test]
         public void AutoPropertyDeclaration()
         {
-            PropertyDeclarationSyntax node = m_generator.AutoPropertyDeclaration("Name", m_generator.TypeExpression(SpecialType.System_Int32));
+            LiteralExpressionSyntax initializer = SyntaxFactory.LiteralExpression(SyntaxKind.NumericLiteralExpression, SyntaxFactory.Literal(10));
+            PropertyDeclarationSyntax node = m_generator.AutoPropertyDeclaration("Name", m_generator.TypeExpression(SpecialType.System_Int32), Accessibility.NotApplicable, DeclarationModifiers.None, initializer);
 
             string result0 = node.NormalizeWhitespace().ToFullString();
             string expected = @"int Name
 {
     get;
     set;
-}";
+}
+
+= 10;";
 
             Assert.NotNull(node);
             Assert.AreEqual(expected, result0);

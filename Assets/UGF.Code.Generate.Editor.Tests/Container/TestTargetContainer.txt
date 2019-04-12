@@ -1,0 +1,10 @@
+public class Container
+{
+    public int IntValue;
+    public float FloatValue;
+    public bool BoolValue
+    {
+        get;
+        set;
+    }
+}

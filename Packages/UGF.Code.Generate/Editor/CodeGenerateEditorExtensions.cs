@@ -10,7 +10,7 @@ namespace UGF.Code.Generate.Editor
 {
     public static class CodeGenerateEditorExtensions
     {
-        public static PropertyDeclarationSyntax AutoPropertyDeclaration(this SyntaxGenerator generator, string name, SyntaxNode type, Accessibility accessibility = Accessibility.NotApplicable, DeclarationModifiers modifiers = default(DeclarationModifiers))
+        public static PropertyDeclarationSyntax AutoPropertyDeclaration(this SyntaxGenerator generator, string name, SyntaxNode type, Accessibility accessibility = Accessibility.NotApplicable, DeclarationModifiers modifiers = default(DeclarationModifiers), SyntaxNode initializer = null)
         {
             if (generator == null) throw new ArgumentNullException(nameof(generator));
             if (name == null) throw new ArgumentNullException(nameof(name));
@@ -30,6 +30,12 @@ namespace UGF.Code.Generate.Editor
             }
 
             property = property.ReplaceNode(property.AccessorList, accessorList);
+
+            if (initializer != null)
+            {
+                property = property.WithInitializer(SyntaxFactory.EqualsValueClause((ExpressionSyntax)initializer));
+                property = property.WithSemicolonToken(SyntaxFactory.Token(SyntaxKind.SemicolonToken));
+            }
 
             return property;
         }
