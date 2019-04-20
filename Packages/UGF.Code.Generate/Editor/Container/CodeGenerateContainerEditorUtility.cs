@@ -2,11 +2,32 @@ using System;
 using System.Reflection;
 using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.CSharp;
+using Microsoft.CodeAnalysis.Editing;
 
 namespace UGF.Code.Generate.Editor.Container
 {
     public static class CodeGenerateContainerEditorUtility
     {
+        public static SyntaxNode CreateUnit(CSharpCompilation compilation, SyntaxGenerator generator, Type type)
+        {
+            SyntaxNode unit = generator.CompilationUnit();
+            CodeGenerateContainer container = Create(compilation, type);
+
+            if (!string.IsNullOrEmpty(type.Namespace))
+            {
+                SyntaxNode namespaceDeclaration = generator.NamespaceDeclaration(type.Namespace);
+
+                namespaceDeclaration = generator.AddMembers(namespaceDeclaration, container.Generate(generator));
+                unit = generator.AddMembers(unit, namespaceDeclaration);
+            }
+            else
+            {
+                unit = generator.AddMembers(unit, container.Generate(generator));
+            }
+
+            return unit;
+        }
+
         public static CodeGenerateContainer Create(CSharpCompilation compilation, Type type)
         {
             if (compilation == null) throw new ArgumentNullException(nameof(compilation));
@@ -22,11 +43,9 @@ namespace UGF.Code.Generate.Editor.Container
             {
                 FieldInfo field = fields[i];
 
-                if (IsValidField(field) && compilation.TryGetTypeByMetadataName(field.FieldType, out INamedTypeSymbol typeSymbol))
+                if (IsValidField(field) && TryCreateField(compilation, field.Name, field.FieldType, false, out CodeGenerateContainerField containerField))
                 {
-                    string typeName = typeSymbol.ToDisplayString(SymbolDisplayFormat.FullyQualifiedFormat);
-
-                    container.Fields.Add(new CodeGenerateContainerField(field.Name, typeName));
+                    container.Fields.Add(containerField);
                 }
             }
 
@@ -34,15 +53,31 @@ namespace UGF.Code.Generate.Editor.Container
             {
                 PropertyInfo property = properties[i];
 
-                if (IsValidProperty(property) && compilation.TryGetTypeByMetadataName(property.PropertyType, out INamedTypeSymbol typeSymbol))
+                if (IsValidProperty(property) && TryCreateField(compilation, property.Name, property.PropertyType, true, out CodeGenerateContainerField containerField))
                 {
-                    string typeName = typeSymbol.ToDisplayString(SymbolDisplayFormat.FullyQualifiedFormat);
-
-                    container.Fields.Add(new CodeGenerateContainerField(property.Name, typeName, null, true));
+                    container.Fields.Add(containerField);
                 }
             }
 
             return container;
+        }
+
+        public static bool TryCreateField(CSharpCompilation compilation, string name, Type returnType, bool asAutoProperty, out CodeGenerateContainerField field)
+        {
+            if (compilation == null) throw new ArgumentNullException(nameof(compilation));
+            if (name == null) throw new ArgumentNullException(nameof(name));
+            if (returnType == null) throw new ArgumentNullException(nameof(returnType));
+
+            if (compilation.TryGetTypeByMetadataName(returnType, out INamedTypeSymbol typeSymbol))
+            {
+                string typeName = typeSymbol.ToDisplayString(SymbolDisplayFormat.FullyQualifiedFormat);
+
+                field = new CodeGenerateContainerField(name, typeName, null, asAutoProperty);
+                return true;
+            }
+
+            field = null;
+            return false;
         }
 
         public static bool IsValidType(Type type)
@@ -51,7 +86,7 @@ namespace UGF.Code.Generate.Editor.Container
 
             bool isObject = type.IsClass || type.IsValueType;
             bool isPublic = type.IsPublic || type.IsNestedPublic;
-            bool isGeneric = type.IsGenericType || type.IsGenericTypeDefinition || type.IsGenericParameter || type.IsConstructedGenericType;
+            bool isGeneric = type.IsGenericTypeDefinition || type.IsGenericParameter;
             bool isOther = type.IsAbstract || type.IsAbstract && type.IsSealed;
 
             return isObject && isPublic && !isGeneric && !isOther;

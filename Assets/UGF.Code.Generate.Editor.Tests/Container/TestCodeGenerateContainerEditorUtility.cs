@@ -14,6 +14,7 @@ namespace UGF.Code.Generate.Editor.Tests.Container
     public class TestCodeGenerateContainerEditorUtility
     {
         private readonly string m_target = "Assets/UGF.Code.Generate.Editor.Tests/Container/TestTargetContainer2.txt";
+        private readonly string m_target3 = "Assets/UGF.Code.Generate.Editor.Tests/Container/TestTargetContainer3.txt";
 
         public class Target
         {
@@ -57,6 +58,20 @@ namespace UGF.Code.Generate.Editor.Tests.Container
 
         public class TargetGenericClass<T>
         {
+        }
+
+        [Test]
+        public void CreateUnit()
+        {
+            CSharpCompilation compilation = CodeAnalysisEditorUtility.ProjectCompilation;
+            SyntaxGenerator generator = CodeAnalysisEditorUtility.Generator;
+
+            SyntaxNode unit = CodeGenerateContainerEditorUtility.CreateUnit(compilation, generator, typeof(Target));
+
+            string result = unit.NormalizeWhitespace().ToFullString();
+            string expected = File.ReadAllText(m_target3);
+
+            Assert.AreEqual(expected, result);
         }
 
         [Test]
