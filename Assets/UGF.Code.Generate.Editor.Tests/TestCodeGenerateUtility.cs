@@ -2,6 +2,7 @@
 using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.CSharp;
 using NUnit.Framework;
+using UGF.Code.Analysis.Editor;
 
 namespace UGF.Code.Generate.Editor.Tests
 {
@@ -9,6 +10,14 @@ namespace UGF.Code.Generate.Editor.Tests
     {
         private readonly string m_targetWithGeneratedCodeLeadingTrivia = "Assets/UGF.Code.Generate.Editor.Tests/TestTargetWithGeneratedCodeLeadingTrivia.txt";
         private readonly string m_targetWithoutGeneratedCodeLeadingTrivia = "Assets/UGF.Code.Generate.Editor.Tests/TestTargetWithoutGeneratedCodeLeadingTrivia.txt";
+        private readonly string m_targetWithAttribute = "Assets/UGF.Code.Generate.Editor.Tests/TestTargetWithAttribute.txt";
+        private CSharpCompilation m_compilation;
+
+        [SetUp]
+        public void Setup()
+        {
+            m_compilation = CodeAnalysisEditorUtility.ProjectCompilation;
+        }
 
         [Test]
         public void AddGeneratedCodeLeadingTrivia()
@@ -23,6 +32,24 @@ namespace UGF.Code.Generate.Editor.Tests
             string result = node.ToFullString();
 
             Assert.AreEqual(sourceWith, result);
+        }
+
+        [Test]
+        public void CheckAttributeFromScriptFromType()
+        {
+            bool result = CodeGenerateEditorUtility.CheckAttributeFromScript(m_compilation, m_targetWithAttribute, typeof(TestAttribute));
+
+            Assert.True(result);
+        }
+
+        [Test]
+        public void CheckAttributeFromScript()
+        {
+            INamedTypeSymbol typeSymbol = m_compilation.GetTypeByMetadataName(typeof(TestAttribute).FullName);
+
+            bool result = CodeGenerateEditorUtility.CheckAttributeFromScript(m_compilation, m_targetWithAttribute, typeSymbol);
+
+            Assert.True(result);
         }
     }
 }
