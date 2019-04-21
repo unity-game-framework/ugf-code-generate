@@ -16,50 +16,6 @@ namespace UGF.Code.Generate.Editor.Tests.Container
         private readonly string m_target = "Assets/UGF.Code.Generate.Editor.Tests/Container/TestTargetContainer2.txt";
         private readonly string m_target3 = "Assets/UGF.Code.Generate.Editor.Tests/Container/TestTargetContainer3.txt";
 
-        public class Target
-        {
-            public bool PublicField;
-#pragma warning disable 414
-            internal bool InternalField = false;
-#pragma warning restore 414
-            protected bool ProtectedField;
-            private bool m_privateField;
-            public static bool StaticField;
-            public readonly bool ReadOnlyField;
-            public const bool ConstField = false;
-
-            public bool PublicProp { get; set; }
-            private bool PrivateProp { get; set; }
-            public bool OnlySetProp { set { } }
-            public bool OnlyGetProp { get; }
-            public static bool StaticProp { get; set; }
-            internal bool InternalProp { get; set; }
-            public bool this[int index] { get { return false; } set { } }
-
-            public List<Vector2> List { get; set; }
-        }
-
-        private class TargetClass
-        {
-        }
-
-        public struct TargetStruct
-        {
-        }
-
-        public static class TargetStaticClass
-        {
-        }
-
-        public abstract class TargetAbstractClass
-        {
-            public abstract bool AbstractProp { get; set; }
-        }
-
-        public class TargetGenericClass<T>
-        {
-        }
-
         [Test]
         public void CreateUnit()
         {
@@ -99,7 +55,7 @@ namespace UGF.Code.Generate.Editor.Tests.Container
             bool result4 = CodeGenerateContainerEditorUtility.IsValidType(typeof(TargetAbstractClass));
             bool result5 = CodeGenerateContainerEditorUtility.IsValidType(typeof(TargetGenericClass<>));
 
-            Assert.False(result0);
+            Assert.True(result0);
             Assert.True(result1);
             Assert.False(result2);
             Assert.True(result3);
@@ -166,5 +122,49 @@ namespace UGF.Code.Generate.Editor.Tests.Container
             Assert.False(result5);
             Assert.False(result6);
         }
+    }
+
+    public class Target
+    {
+        public bool PublicField;
+#pragma warning disable 414
+        internal bool InternalField = false;
+#pragma warning restore 414
+        protected bool ProtectedField;
+        private bool m_privateField;
+        public static bool StaticField;
+        public readonly bool ReadOnlyField;
+        public const bool ConstField = false;
+
+        public bool PublicProp { get; set; }
+        private bool PrivateProp { get; set; }
+        public bool OnlySetProp { set { } }
+        public bool OnlyGetProp { get; }
+        public static bool StaticProp { get; set; }
+        internal bool InternalProp { get; set; }
+        public bool this[int index] { get { return false; } set { } }
+
+        public List<Vector2> List { get; set; }
+    }
+
+    public class TargetClass
+    {
+    }
+
+    public struct TargetStruct
+    {
+    }
+
+    public static class TargetStaticClass
+    {
+    }
+
+    public abstract class TargetAbstractClass
+    {
+        public abstract bool AbstractProp { get; set; }
+    }
+
+    public class TargetGenericClass<T>
+    {
     }
 }

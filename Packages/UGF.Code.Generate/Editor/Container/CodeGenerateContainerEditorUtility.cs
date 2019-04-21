@@ -42,8 +42,8 @@ namespace UGF.Code.Generate.Editor.Container
 
             var container = new CodeGenerateContainer(type.Name, type.IsValueType);
 
-            FieldInfo[] fields = type.GetFields();
-            PropertyInfo[] properties = type.GetProperties();
+            FieldInfo[] fields = type.GetFields(BindingFlags.Instance | BindingFlags.Public);
+            PropertyInfo[] properties = type.GetProperties(BindingFlags.Instance | BindingFlags.Public);
 
             for (int i = 0; i < fields.Length; i++)
             {
@@ -90,8 +90,8 @@ namespace UGF.Code.Generate.Editor.Container
         {
             if (type == null) throw new ArgumentNullException(nameof(type));
 
-            bool isObject = type.IsClass || type.IsValueType;
-            bool isPublic = type.IsPublic || type.IsNestedPublic;
+            bool isObject = (type.IsClass || type.IsValueType) && !type.IsEnum;
+            bool isPublic = type.IsPublic;
             bool isGeneric = type.IsGenericTypeDefinition || type.IsGenericParameter;
             bool isOther = type.IsAbstract || type.IsAbstract && type.IsSealed;
 
