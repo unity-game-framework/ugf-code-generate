@@ -10,12 +10,18 @@ namespace UGF.Code.Generate.Editor.Container
     {
         public static SyntaxNode CreateUnit(CSharpCompilation compilation, SyntaxGenerator generator, Type type)
         {
-            SyntaxNode unit = generator.CompilationUnit();
             CodeGenerateContainer container = Create(compilation, type);
 
-            if (!string.IsNullOrEmpty(type.Namespace))
+            return CreateUnit(generator, container, type.Namespace);
+        }
+
+        public static SyntaxNode CreateUnit(SyntaxGenerator generator, CodeGenerateContainer container, string namespaceRoot)
+        {
+            SyntaxNode unit = generator.CompilationUnit();
+
+            if (!string.IsNullOrEmpty(namespaceRoot))
             {
-                SyntaxNode namespaceDeclaration = generator.NamespaceDeclaration(type.Namespace);
+                SyntaxNode namespaceDeclaration = generator.NamespaceDeclaration(namespaceRoot);
 
                 namespaceDeclaration = generator.AddMembers(namespaceDeclaration, container.Generate(generator));
                 unit = generator.AddMembers(unit, namespaceDeclaration);
