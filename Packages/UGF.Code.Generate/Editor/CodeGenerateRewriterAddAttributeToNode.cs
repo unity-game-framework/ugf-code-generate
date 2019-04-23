@@ -6,24 +6,58 @@ using Microsoft.CodeAnalysis.Editing;
 
 namespace UGF.Code.Generate.Editor
 {
+    /// <summary>
+    /// Represents the syntax rewrite that adds attribute to the specified target.
+    /// <para>
+    /// This rewriter visit all types of declaration where attribute can be applied.
+    /// </para>
+    /// <para>
+    /// Rewrite will no format trivia of the added attributes.
+    /// </para>
+    /// </summary>
     public class CodeGenerateRewriterAddAttributeToNode : CSharpSyntaxRewriter
     {
+        /// <summary>
+        /// Gets syntax generator used to apply attribute.
+        /// </summary>
         public SyntaxGenerator Generator { get; }
+
+        /// <summary>
+        /// Gets syntax node of the attribute to apply.
+        /// </summary>
         public SyntaxNode Attribute { get; }
+
+        /// <summary>
+        /// Gets delegate to validate target declaration to apply attribute.
+        /// </summary>
         public CodeGenerateRewriterAddAttributeToNodeValidate Validate { get; }
 
-        public CodeGenerateRewriterAddAttributeToNode(SyntaxGenerator generator, SyntaxNode attribute, CodeGenerateRewriterAddAttributeToNodeValidate validate, bool visitIntoStructuredTrivia = false) : base(visitIntoStructuredTrivia)
+        /// <summary>
+        /// Creates rewriter with the specified generator, attribute and validate handler.
+        /// </summary>
+        /// <param name="generator">The syntax generator used to apply attribute.</param>
+        /// <param name="attribute">The syntax node attribute to apply.</param>
+        /// <param name="validate">The delegate handler to validate declaration.</param>
+        public CodeGenerateRewriterAddAttributeToNode(SyntaxGenerator generator, SyntaxNode attribute, CodeGenerateRewriterAddAttributeToNodeValidate validate = null) : base(false)
         {
             Generator = generator ?? throw new ArgumentNullException(nameof(generator));
             Attribute = attribute ?? throw new ArgumentNullException(nameof(attribute));
-            Validate = validate ?? throw new ArgumentNullException(nameof(validate));
+            Validate = validate != null ? validate : declaration => true;
         }
 
+        /// <summary>
+        /// Applies attribute to the specified syntax node that pass validation.
+        /// </summary>
+        /// <param name="node">The syntax node to apply.</param>
         protected virtual SyntaxNode Apply(SyntaxNode node)
         {
             return Validate(node) ? AddAttribute(node) : node;
         }
 
+        /// <summary>
+        /// Adds attribute to the specified declaration.
+        /// </summary>
+        /// <param name="declaration">The declaration to add attribute.</param>
         protected virtual SyntaxNode AddAttribute(SyntaxNode declaration)
         {
             return Generator.AddAttributes(declaration, Attribute);

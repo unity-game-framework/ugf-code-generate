@@ -5,8 +5,18 @@ using Microsoft.CodeAnalysis.CSharp;
 
 namespace UGF.Code.Generate.Editor
 {
+    /// <summary>
+    /// Provides utilities to work with code generation in editor.
+    /// </summary>
     public static class CodeGenerateEditorUtility
     {
+        /// <summary>
+        /// Adds leading trivia indicates that specified code was generated.
+        /// <para>
+        /// Also adds "ReSharper" ignorance.
+        /// </para>
+        /// </summary>
+        /// <param name="node">The syntax node to modify.</param>
         public static T AddGeneratedCodeLeadingTrivia<T>(T node) where T : SyntaxNode
         {
             if (node == null) throw new ArgumentNullException(nameof(node));
@@ -20,6 +30,15 @@ namespace UGF.Code.Generate.Editor
             return node;
         }
 
+        /// <summary>
+        /// Checks source script at the specified path for attribute.
+        /// <para>
+        /// This method will determines whether any declaration in the specified source script contains an attribute with the specified type.
+        /// </para>
+        /// </summary>
+        /// <param name="compilation">The project compilation.</param>
+        /// <param name="path">The path of the source script.</param>
+        /// <param name="attributeType">The type of the attribute to check.</param>
         public static bool CheckAttributeFromScript(CSharpCompilation compilation, string path, Type attributeType)
         {
             if (compilation == null) throw new ArgumentNullException(nameof(compilation));
@@ -33,6 +52,15 @@ namespace UGF.Code.Generate.Editor
             return CheckAttributeFromScript(compilation, path, typeSymbol);
         }
 
+        /// <summary>
+        /// Checks source script at the specified path for attribute.
+        /// <para>
+        /// This method will determines whether any declaration in the specified source script contains an attribute with the specified type.
+        /// </para>
+        /// </summary>
+        /// <param name="compilation">The project compilation.</param>
+        /// <param name="path">The path of the source script.</param>
+        /// <param name="attributeTypeSymbol">The type symbol of the attribute to check.</param>
         public static bool CheckAttributeFromScript(CSharpCompilation compilation, string path, ITypeSymbol attributeTypeSymbol)
         {
             if (compilation == null) throw new ArgumentNullException(nameof(compilation));

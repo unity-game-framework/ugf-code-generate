@@ -8,9 +8,21 @@ using Microsoft.CodeAnalysis.Editing;
 
 namespace UGF.Code.Generate.Editor
 {
+    /// <summary>
+    /// Provides extensions for code generate.
+    /// </summary>
     public static class CodeGenerateEditorExtensions
     {
-        public static PropertyDeclarationSyntax AutoPropertyDeclaration(this SyntaxGenerator generator, string name, SyntaxNode type, Accessibility accessibility = Accessibility.NotApplicable, DeclarationModifiers modifiers = default(DeclarationModifiers), SyntaxNode initializer = null)
+        /// <summary>
+        /// Generates auto property with the specified name, type, accessibility, modifiers and initializer.
+        /// </summary>
+        /// <param name="generator">The syntax generator to use.</param>
+        /// <param name="name">The name of the auto property.</param>
+        /// <param name="type">The type of the property.</param>
+        /// <param name="accessibility">The accessibility of the property.</param>
+        /// <param name="modifiers">The modifiers of the property.</param>
+        /// <param name="initializer">The initializer of the property.</param>
+        public static PropertyDeclarationSyntax AutoPropertyDeclaration(this SyntaxGenerator generator, string name, SyntaxNode type, Accessibility accessibility = Accessibility.NotApplicable, DeclarationModifiers modifiers = default, SyntaxNode initializer = null)
         {
             if (generator == null) throw new ArgumentNullException(nameof(generator));
             if (name == null) throw new ArgumentNullException(nameof(name));
@@ -40,6 +52,15 @@ namespace UGF.Code.Generate.Editor
             return property;
         }
 
+        /// <summary>
+        /// Tries to get type symbol by the specified type metadata name.
+        /// <para>
+        /// This method also resolve generic types.
+        /// </para>
+        /// </summary>
+        /// <param name="compilation">The compilation to use.</param>
+        /// <param name="type">The type to find symbol.</param>
+        /// <param name="typeSymbol">The found type symbol.</param>
         public static bool TryGetTypeByMetadataName(this CSharpCompilation compilation, Type type, out INamedTypeSymbol typeSymbol)
         {
             if (compilation == null) throw new ArgumentNullException(nameof(compilation));
@@ -63,6 +84,13 @@ namespace UGF.Code.Generate.Editor
             return true;
         }
 
+        /// <summary>
+        /// Tries to get type symbol from the specified generic type definition and type arguments metadata.
+        /// </summary>
+        /// <param name="compilation">The compilation to use.</param>
+        /// <param name="genericDefinition">The type metadata name of the generic definition.</param>
+        /// <param name="arguments">The types metadata names of the generic arguments.</param>
+        /// <param name="typeSymbol">The found type symbol.</param>
         public static bool TryGetGenericTypeByMetadataName(this CSharpCompilation compilation, string genericDefinition, IEnumerable<string> arguments, out INamedTypeSymbol typeSymbol)
         {
             if (compilation == null) throw new ArgumentNullException(nameof(compilation));
