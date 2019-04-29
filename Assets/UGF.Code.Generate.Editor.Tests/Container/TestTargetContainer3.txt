@@ -1,0 +1,18 @@
+namespace UGF.Code.Generate.Editor.Tests.Container
+{
+    public class Target
+    {
+        public bool PublicField;
+        public bool PublicProp
+        {
+            get;
+            set;
+        }
+
+        public global::System.Collections.Generic.List<global::UnityEngine.Vector2> List
+        {
+            get;
+            set;
+        }
+    }
+}

@@ -1,0 +1,11 @@
+// THIS IS A GENERATED CODE. DO NOT EDIT.
+// ReSharper disable all
+
+using System;
+
+namespace Test
+{
+    public class Target
+    {
+    }
+}

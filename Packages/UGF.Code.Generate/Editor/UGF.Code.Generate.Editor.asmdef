@@ -1,0 +1,17 @@
+{
+    "name": "UGF.Code.Generate.Editor",
+    "references": [
+        "GUID:3261026f398ac504fa7bfd69a915d0d0"
+    ],
+    "optionalUnityReferences": [],
+    "includePlatforms": [
+        "Editor"
+    ],
+    "excludePlatforms": [],
+    "allowUnsafeCode": false,
+    "overrideReferences": false,
+    "precompiledReferences": [],
+    "autoReferenced": true,
+    "defineConstraints": [],
+    "versionDefines": []
+}
