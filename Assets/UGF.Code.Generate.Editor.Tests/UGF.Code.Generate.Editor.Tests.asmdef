@@ -1,0 +1,20 @@
+{
+    "name": "UGF.Code.Generate.Editor.Tests",
+    "references": [
+        "GUID:3686f1ecbde070e4dbd247e1291c142f",
+        "GUID:3261026f398ac504fa7bfd69a915d0d0"
+    ],
+    "optionalUnityReferences": [
+        "TestAssemblies"
+    ],
+    "includePlatforms": [
+        "Editor"
+    ],
+    "excludePlatforms": [],
+    "allowUnsafeCode": false,
+    "overrideReferences": false,
+    "precompiledReferences": [],
+    "autoReferenced": true,
+    "defineConstraints": [],
+    "versionDefines": []
+}

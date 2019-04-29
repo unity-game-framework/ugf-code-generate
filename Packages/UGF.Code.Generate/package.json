@@ -1,12 +1,14 @@
 {
     "name": "com.ugf.code.generate",
     "displayName": "UGF.Code.Generate",
-    "version": "0.0.0-preview",
+    "version": "1.0.0-preview.1",
     "unity": "2019.1",
     "description": "No description.",
     "author": {
         "name": "Unity Game Framework",
         "url": "https://github.com/unity-game-framework"
     },
-    "dependencies": {}
+    "dependencies": {
+        "com.ugf.code.analysis": "1.0.0-preview.1"
+    }
 }
