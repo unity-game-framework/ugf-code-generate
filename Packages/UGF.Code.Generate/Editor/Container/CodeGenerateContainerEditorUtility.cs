@@ -1,46 +1,36 @@
 using System;
+using System.Collections.Generic;
 using System.Reflection;
 using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.CSharp;
 using Microsoft.CodeAnalysis.Editing;
+using UGF.Code.Analysis.Editor;
 
 namespace UGF.Code.Generate.Editor.Container
 {
     /// <summary>
     /// Provides utilities to work with code generated containers.
     /// </summary>
-    public static class CodeGenerateContainerEditorUtility
+    public static partial class CodeGenerateContainerEditorUtility
     {
-        /// <summary>
-        /// Creates container from the specified type as compilation unit.
-        /// <para>
-        /// This method will generate container inside type namespace, if presents.
-        /// </para>
-        /// </summary>
-        /// <param name="compilation">The project compilation.</param>
-        /// <param name="generator">The syntax generator.</param>
-        /// <param name="type">The target type of the container.</param>
-        public static SyntaxNode CreateUnit(CSharpCompilation compilation, SyntaxGenerator generator, Type type)
+        public static CodeGenerateContainerValidation DefaultValidation { get; } = new CodeGenerateContainerValidation();
+
+        public static SyntaxNode CreateUnit(Type type, ICodeGenerateContainerValidation validation = null, CSharpCompilation compilation = null, SyntaxGenerator generator = null)
         {
-            if (compilation == null) throw new ArgumentNullException(nameof(compilation));
-            if (generator == null) throw new ArgumentNullException(nameof(generator));
             if (type == null) throw new ArgumentNullException(nameof(type));
+            if (validation == null) validation = DefaultValidation;
+            if (compilation == null) compilation = CodeAnalysisEditorUtility.ProjectCompilation;
+            if (generator == null) generator = CodeAnalysisEditorUtility.Generator;
 
-            CodeGenerateContainer container = Create(compilation, type);
+            CodeGenerateContainer container = Create(type, validation, compilation);
 
-            return CreateUnit(generator, container, type.Namespace);
+            return CreateUnit(container, generator, type.Namespace);
         }
 
-        /// <summary>
-        /// Creates compilation unit from the specified container.
-        /// </summary>
-        /// <param name="generator">The syntax generator.</param>
-        /// <param name="container">The container used to generate compilation unit.</param>
-        /// <param name="namespaceRoot">The namespace of the container.</param>
-        public static SyntaxNode CreateUnit(SyntaxGenerator generator, CodeGenerateContainer container, string namespaceRoot = null)
+        public static SyntaxNode CreateUnit(CodeGenerateContainer container, SyntaxGenerator generator = null, string namespaceRoot = null)
         {
-            if (generator == null) throw new ArgumentNullException(nameof(generator));
             if (container == null) throw new ArgumentNullException(nameof(container));
+            if (generator == null) generator = CodeAnalysisEditorUtility.Generator;
 
             SyntaxNode unit = generator.CompilationUnit();
 
@@ -59,43 +49,36 @@ namespace UGF.Code.Generate.Editor.Container
             return unit;
         }
 
-        /// <summary>
-        /// Creates container from the specified valid type.
-        /// <para>
-        /// This method will generates container from the valid type with the valid fields and properties.
-        /// </para>
-        /// </summary>
-        /// <param name="compilation">The project compilation.</param>
-        /// <param name="type">The target type to generate container from.</param>
-        /// <exception cref="ArgumentException">The specified type must be valid to generate container.</exception>
-        public static CodeGenerateContainer Create(CSharpCompilation compilation, Type type)
+        public static CodeGenerateContainer Create(Type type, ICodeGenerateContainerValidation validation = null, CSharpCompilation compilation = null)
         {
-            if (compilation == null) throw new ArgumentNullException(nameof(compilation));
             if (type == null) throw new ArgumentNullException(nameof(type));
-            if (!IsValidType(type)) throw new ArgumentException("The specified type not valid.", nameof(type));
+            if (validation == null) validation = DefaultValidation;
+            if (compilation == null) compilation = CodeAnalysisEditorUtility.ProjectCompilation;
 
             var container = new CodeGenerateContainer(type.Name, type.IsValueType);
 
-            FieldInfo[] fields = GetFields(type);
-            PropertyInfo[] properties = GetProperties(type);
+            IEnumerable<FieldInfo> fields = validation.GetFields(type);
+            IEnumerable<PropertyInfo> properties = validation.GetProperties(type);
 
-            for (int i = 0; i < fields.Length; i++)
+            foreach (FieldInfo field in fields)
             {
-                FieldInfo field = fields[i];
-
-                if (IsValidField(field) && TryCreateField(compilation, field.Name, field.FieldType, false, out CodeGenerateContainerField containerField))
+                if (validation.Validate(field))
                 {
-                    container.Fields.Add(containerField);
+                    if (TryCreateField(compilation, field.Name, field.FieldType, false, out CodeGenerateContainerField containerField))
+                    {
+                        container.Fields.Add(containerField);
+                    }
                 }
             }
 
-            for (int i = 0; i < properties.Length; i++)
+            foreach (PropertyInfo property in properties)
             {
-                PropertyInfo property = properties[i];
-
-                if (IsValidProperty(property) && TryCreateField(compilation, property.Name, property.PropertyType, true, out CodeGenerateContainerField containerField))
+                if (validation.Validate(property))
                 {
-                    container.Fields.Add(containerField);
+                    if (TryCreateField(compilation, property.Name, property.PropertyType, true, out CodeGenerateContainerField containerField))
+                    {
+                        container.Fields.Add(containerField);
+                    }
                 }
             }
 

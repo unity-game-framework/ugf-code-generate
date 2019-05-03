@@ -12,11 +12,14 @@ namespace UGF.Code.Generate.Editor.Container.External
 {
     public static class CodeGenerateContainerExternalEditorUtility
     {
-        public static void GenerateExternalContainers(Type infoType, IReadOnlyList<string> paths, ICollection<string> externals, CSharpCompilation compilation = null, SyntaxGenerator generator = null)
+        public static CodeGenerateContainerExternalValidation DefaultValidation { get; } = new CodeGenerateContainerExternalValidation();
+
+        public static void GenerateExternalContainers(Type infoType, IReadOnlyList<string> paths, ICollection<string> externals, ICodeGenerateContainerValidation validation = null, CSharpCompilation compilation = null, SyntaxGenerator generator = null)
         {
             if (infoType == null) throw new ArgumentNullException(nameof(infoType));
             if (paths == null) throw new ArgumentNullException(nameof(paths));
             if (externals == null) throw new ArgumentNullException(nameof(externals));
+            if (validation == null) validation = DefaultValidation;
             if (compilation == null) compilation = CodeAnalysisEditorUtility.ProjectCompilation;
             if (generator == null) generator = CodeAnalysisEditorUtility.Generator;
 
@@ -28,8 +31,8 @@ namespace UGF.Code.Generate.Editor.Container.External
                 {
                     if (info.TryGetTargetType(out Type type))
                     {
-                        CodeGenerateContainer container = CreateContainer(info, compilation);
-                        SyntaxNode unit = CodeGenerateContainerEditorUtility.CreateUnit(generator, container, type.Namespace);
+                        CodeGenerateContainer container = CreateContainer(info, validation, compilation);
+                        SyntaxNode unit = CodeGenerateContainerEditorUtility.CreateUnit(container, generator, type.Namespace);
 
                         string source = unit.NormalizeWhitespace().ToFullString();
 
@@ -39,9 +42,10 @@ namespace UGF.Code.Generate.Editor.Container.External
             }
         }
 
-        public static CodeGenerateContainer CreateContainer(ICodeGenerateContainerExternalInfo info, CSharpCompilation compilation = null)
+        public static CodeGenerateContainer CreateContainer(ICodeGenerateContainerExternalInfo info, ICodeGenerateContainerValidation validation = null, CSharpCompilation compilation = null)
         {
             if (info == null) throw new ArgumentNullException(nameof(info));
+            if (validation == null) validation = DefaultValidation;
             if (compilation == null) compilation = CodeAnalysisEditorUtility.ProjectCompilation;
 
             if (!info.TryGetTargetType(out Type type))
@@ -50,13 +54,11 @@ namespace UGF.Code.Generate.Editor.Container.External
             }
 
             var container = new CodeGenerateContainer(type.Name, type.IsValueType);
-            FieldInfo[] fields = CodeGenerateContainerEditorUtility.GetFields(type);
-            PropertyInfo[] properties = CodeGenerateContainerEditorUtility.GetProperties(type);
+            IEnumerable<FieldInfo> fields = validation.GetFields(type);
+            IEnumerable<PropertyInfo> properties = validation.GetProperties(type);
 
-            for (int i = 0; i < fields.Length; i++)
+            foreach (FieldInfo field in fields)
             {
-                FieldInfo field = fields[i];
-
                 if (CodeGenerateContainerEditorUtility.IsValidField(field))
                 {
                     if (info.TryGetMember(field.Name, out CodeGenerateContainerExternalMemberInfo member) && member.Active)
@@ -69,10 +71,8 @@ namespace UGF.Code.Generate.Editor.Container.External
                 }
             }
 
-            for (int i = 0; i < properties.Length; i++)
+            foreach (PropertyInfo property in properties)
             {
-                PropertyInfo property = properties[i];
-
                 if (CodeGenerateContainerEditorUtility.IsValidProperty(property))
                 {
                     if (info.TryGetMember(property.Name, out CodeGenerateContainerExternalMemberInfo member) && member.Active)
