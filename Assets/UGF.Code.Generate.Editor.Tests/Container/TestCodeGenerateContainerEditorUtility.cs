@@ -19,10 +19,11 @@ namespace UGF.Code.Generate.Editor.Tests.Container
         [Test]
         public void CreateUnit()
         {
+            CodeGenerateContainerValidation validation = CodeGenerateContainerEditorUtility.DefaultValidation;
             CSharpCompilation compilation = CodeAnalysisEditorUtility.ProjectCompilation;
             SyntaxGenerator generator = CodeAnalysisEditorUtility.Generator;
 
-            SyntaxNode unit = CodeGenerateContainerEditorUtility.CreateUnit(compilation, generator, typeof(Target));
+            SyntaxNode unit = CodeGenerateContainerEditorUtility.CreateUnit(typeof(Target), validation, compilation, generator);
 
             string result = unit.NormalizeWhitespace().ToFullString();
             string expected = File.ReadAllText(m_target3);
@@ -33,9 +34,10 @@ namespace UGF.Code.Generate.Editor.Tests.Container
         [Test]
         public void Create()
         {
+            CodeGenerateContainerValidation validation = CodeGenerateContainerEditorUtility.DefaultValidation;
             CSharpCompilation compilation = CodeAnalysisEditorUtility.ProjectCompilation;
             SyntaxGenerator generator = CodeAnalysisEditorUtility.Generator;
-            CodeGenerateContainer container = CodeGenerateContainerEditorUtility.Create(compilation, typeof(Target));
+            CodeGenerateContainer container = CodeGenerateContainerEditorUtility.Create(typeof(Target), validation, compilation);
 
             Assert.NotNull(container);
 
