@@ -122,6 +122,24 @@ namespace UGF.Code.Generate.Editor.Tests.Container
             Assert.False(result5);
             Assert.False(result6);
         }
+
+        [Test]
+        public void GetFields()
+        {
+            FieldInfo[] fields = CodeGenerateContainerEditorUtility.GetFields(typeof(Target));
+
+            Assert.NotNull(fields);
+            Assert.AreEqual(2, fields.Length);
+        }
+
+        [Test]
+        public void GetProperties()
+        {
+            PropertyInfo[] properties = CodeGenerateContainerEditorUtility.GetProperties(typeof(Target));
+
+            Assert.NotNull(properties);
+            Assert.AreEqual(5, properties.Length);
+        }
     }
 
     public class Target

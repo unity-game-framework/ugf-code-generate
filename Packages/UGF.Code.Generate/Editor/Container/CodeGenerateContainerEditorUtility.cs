@@ -76,8 +76,8 @@ namespace UGF.Code.Generate.Editor.Container
 
             var container = new CodeGenerateContainer(type.Name, type.IsValueType);
 
-            FieldInfo[] fields = type.GetFields(BindingFlags.Instance | BindingFlags.Public);
-            PropertyInfo[] properties = type.GetProperties(BindingFlags.Instance | BindingFlags.Public);
+            FieldInfo[] fields = GetFields(type);
+            PropertyInfo[] properties = GetProperties(type);
 
             for (int i = 0; i < fields.Length; i++)
             {
@@ -192,6 +192,24 @@ namespace UGF.Code.Generate.Editor.Container
             bool isSetValid = set != null && set.IsPublic && !set.IsStatic && !set.IsAbstract;
 
             return property.GetIndexParameters().Length == 0 && isGetValid && isSetValid;
+        }
+
+        /// <summary>
+        /// Gets public non static fields from the specified type.
+        /// </summary>
+        /// <param name="type">The type to get fields from.</param>
+        public static FieldInfo[] GetFields(Type type)
+        {
+            return type.GetFields(BindingFlags.Instance | BindingFlags.Public);
+        }
+
+        /// <summary>
+        /// Gets public non static properties from the specified type.
+        /// </summary>
+        /// <param name="type">The type to get properties from.</param>
+        public static PropertyInfo[] GetProperties(Type type)
+        {
+            return type.GetProperties(BindingFlags.Instance | BindingFlags.Public);
         }
     }
 }
