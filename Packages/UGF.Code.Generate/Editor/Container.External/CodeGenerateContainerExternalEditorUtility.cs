@@ -88,12 +88,13 @@ namespace UGF.Code.Generate.Editor.Container.External
             return container;
         }
 
-        public static bool TryGetInfoFromAssetPath<T>(string path, out T info) where T : ICodeGenerateContainerExternalInfo
+        public static bool TryGetInfoFromAssetPath<T>(string path, out T info) where T : class, ICodeGenerateContainerExternalInfo
         {
             if (TryGetInfoFromAssetPath(path, typeof(T), out ICodeGenerateContainerExternalInfo interfaceInfo))
             {
-                info = (T)interfaceInfo;
-                return true;
+                info = interfaceInfo as T;
+
+                return info != null;
             }
 
             info = default;

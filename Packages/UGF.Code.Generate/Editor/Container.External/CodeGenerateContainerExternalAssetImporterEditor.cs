@@ -208,7 +208,7 @@ namespace UGF.Code.Generate.Editor.Container.External
             m_extraSerializedObject.ApplyModifiedProperties();
 
             var extra = (Extra)m_extraSerializedObject.targetObject;
-            string text = JsonUtility.ToJson(extra.Info, true);
+            string text = JsonUtility.ToJson(extra.Info, true).Replace("\n", "\r\n");
 
             File.WriteAllText(m_importer.assetPath, text);
         }
@@ -266,6 +266,8 @@ namespace UGF.Code.Generate.Editor.Container.External
             TInfo info = CreateInfo(type);
 
             SetInfo(info);
+
+            ValidateType(type.AssemblyQualifiedName);
         }
 
         private void ValidateType(string typeName)

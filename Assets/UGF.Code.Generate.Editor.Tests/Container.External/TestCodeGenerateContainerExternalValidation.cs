@@ -1,7 +1,6 @@
 using System;
 using NUnit.Framework;
 using UGF.Code.Generate.Editor.Container.External;
-using UnityEngine;
 using Object = UnityEngine.Object;
 
 namespace UGF.Code.Generate.Editor.Tests.Container.External
