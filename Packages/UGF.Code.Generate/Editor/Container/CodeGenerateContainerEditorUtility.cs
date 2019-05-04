@@ -128,7 +128,7 @@ namespace UGF.Code.Generate.Editor.Container
         {
             if (type == null) throw new ArgumentNullException(nameof(type));
 
-            bool isObject = (type.IsClass || type.IsValueType) && !type.IsEnum;
+            bool isObject = (type.IsClass || type.IsValueType) && !type.IsEnum && !typeof(Delegate).IsAssignableFrom(type);
             bool isPublic = type.IsPublic;
             bool isGeneric = type.IsGenericTypeDefinition || type.IsGenericParameter;
             bool isOther = type.IsAbstract || type.IsAbstract && type.IsSealed;

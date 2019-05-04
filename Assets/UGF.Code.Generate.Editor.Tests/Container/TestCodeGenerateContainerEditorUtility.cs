@@ -56,6 +56,7 @@ namespace UGF.Code.Generate.Editor.Tests.Container
             bool result3 = CodeGenerateContainerEditorUtility.IsValidType(typeof(Target));
             bool result4 = CodeGenerateContainerEditorUtility.IsValidType(typeof(TargetAbstractClass));
             bool result5 = CodeGenerateContainerEditorUtility.IsValidType(typeof(TargetGenericClass<>));
+            bool result6 = CodeGenerateContainerEditorUtility.IsValidType(typeof(TestDelegate));
 
             Assert.True(result0);
             Assert.True(result1);
@@ -63,6 +64,7 @@ namespace UGF.Code.Generate.Editor.Tests.Container
             Assert.True(result3);
             Assert.False(result4);
             Assert.False(result5);
+            Assert.False(result6);
         }
 
         [Test]
@@ -187,4 +189,6 @@ namespace UGF.Code.Generate.Editor.Tests.Container
     public class TargetGenericClass<T>
     {
     }
+
+    public delegate void TestDelegate();
 }
