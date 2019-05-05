@@ -126,5 +126,23 @@ namespace UGF.Code.Generate.Editor
             typeSymbol = null;
             return false;
         }
+
+        public static bool TryGetGenericNameSyntax(this TypeSyntax typeSyntax, out GenericNameSyntax genericNameSyntax)
+        {
+            if (typeSyntax is NameSyntax nameSyntax)
+            {
+                if (nameSyntax is QualifiedNameSyntax qualifiedNameSyntax)
+                {
+                    nameSyntax = qualifiedNameSyntax.Right;
+                }
+
+                genericNameSyntax = nameSyntax as GenericNameSyntax;
+
+                return genericNameSyntax != null;
+            }
+
+            genericNameSyntax = null;
+            return false;
+        }
     }
 }
