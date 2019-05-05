@@ -95,6 +95,9 @@ namespace UGF.Code.Generate.Editor
 
         public static bool TryConstructTypeSymbol(this Compilation compilation, Type type, out INamedTypeSymbol typeSymbol)
         {
+            if (compilation == null) throw new ArgumentNullException(nameof(compilation));
+            if (type == null) throw new ArgumentNullException(nameof(type));
+
             if (!TryGetAnyTypeByMetadataName(compilation, type.FullName, out typeSymbol))
             {
                 if (type.IsGenericType && !type.IsGenericTypeDefinition)
@@ -111,6 +114,11 @@ namespace UGF.Code.Generate.Editor
 
         public static bool TryConstructGenericTypeSymbol(this Compilation compilation, Type definition, IReadOnlyList<Type> arguments, out INamedTypeSymbol typeSymbol)
         {
+            if (compilation == null) throw new ArgumentNullException(nameof(compilation));
+            if (definition == null) throw new ArgumentNullException(nameof(definition));
+            if (arguments == null) throw new ArgumentNullException(nameof(arguments));
+            if (arguments.Count == 0) throw new ArgumentException("The specified arguments collection is empty.", nameof(arguments));
+
             if (TryConstructTypeSymbol(compilation, definition, out INamedTypeSymbol definitionTypeSymbol))
             {
                 var argumentTypeSymbols = new ITypeSymbol[arguments.Count];
@@ -140,6 +148,8 @@ namespace UGF.Code.Generate.Editor
 
         public static bool TryGetGenericNameSyntax(this TypeSyntax typeSyntax, out GenericNameSyntax genericNameSyntax)
         {
+            if (typeSyntax == null) throw new ArgumentNullException(nameof(typeSyntax));
+
             if (typeSyntax is NameSyntax nameSyntax)
             {
                 if (nameSyntax is QualifiedNameSyntax qualifiedNameSyntax)
