@@ -39,7 +39,7 @@ namespace UGF.Code.Generate.Editor
         /// <param name="compilation">The project compilation.</param>
         /// <param name="path">The path of the source script.</param>
         /// <param name="attributeType">The type of the attribute to check.</param>
-        public static bool CheckAttributeFromScript(CSharpCompilation compilation, string path, Type attributeType)
+        public static bool CheckAttributeFromScript(Compilation compilation, string path, Type attributeType)
         {
             if (compilation == null) throw new ArgumentNullException(nameof(compilation));
             if (string.IsNullOrEmpty(path)) throw new ArgumentNullException(nameof(path));
@@ -61,7 +61,7 @@ namespace UGF.Code.Generate.Editor
         /// <param name="compilation">The project compilation.</param>
         /// <param name="path">The path of the source script.</param>
         /// <param name="attributeTypeSymbol">The type symbol of the attribute to check.</param>
-        public static bool CheckAttributeFromScript(CSharpCompilation compilation, string path, ITypeSymbol attributeTypeSymbol)
+        public static bool CheckAttributeFromScript(Compilation compilation, string path, ITypeSymbol attributeTypeSymbol)
         {
             if (compilation == null) throw new ArgumentNullException(nameof(compilation));
             if (string.IsNullOrEmpty(path)) throw new ArgumentNullException(nameof(path));

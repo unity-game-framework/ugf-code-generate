@@ -102,7 +102,7 @@ namespace UGF.Code.Generate.Editor.Container
             if (name == null) throw new ArgumentNullException(nameof(name));
             if (returnType == null) throw new ArgumentNullException(nameof(returnType));
 
-            if (compilation.TryGetTypeByMetadataName(returnType, out INamedTypeSymbol typeSymbol))
+            if (compilation.TryConstructTypeSymbol(returnType, out INamedTypeSymbol typeSymbol))
             {
                 string typeName = typeSymbol.ToDisplayString(SymbolDisplayFormat.FullyQualifiedFormat);
 
