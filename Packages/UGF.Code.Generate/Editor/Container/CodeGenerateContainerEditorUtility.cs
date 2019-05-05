@@ -2,7 +2,6 @@ using System;
 using System.Collections.Generic;
 using System.Reflection;
 using Microsoft.CodeAnalysis;
-using Microsoft.CodeAnalysis.CSharp;
 using Microsoft.CodeAnalysis.Editing;
 using UGF.Code.Analysis.Editor;
 
@@ -15,7 +14,7 @@ namespace UGF.Code.Generate.Editor.Container
     {
         public static CodeGenerateContainerValidation DefaultValidation { get; } = new CodeGenerateContainerValidation();
 
-        public static SyntaxNode CreateUnit(Type type, ICodeGenerateContainerValidation validation = null, CSharpCompilation compilation = null, SyntaxGenerator generator = null)
+        public static SyntaxNode CreateUnit(Type type, ICodeGenerateContainerValidation validation = null, Compilation compilation = null, SyntaxGenerator generator = null)
         {
             if (type == null) throw new ArgumentNullException(nameof(type));
             if (validation == null) validation = DefaultValidation;
@@ -49,7 +48,7 @@ namespace UGF.Code.Generate.Editor.Container
             return unit;
         }
 
-        public static CodeGenerateContainer Create(Type type, ICodeGenerateContainerValidation validation = null, CSharpCompilation compilation = null)
+        public static CodeGenerateContainer Create(Type type, ICodeGenerateContainerValidation validation = null, Compilation compilation = null)
         {
             if (type == null) throw new ArgumentNullException(nameof(type));
             if (validation == null) validation = DefaultValidation;
@@ -96,7 +95,7 @@ namespace UGF.Code.Generate.Editor.Container
         /// <param name="returnType">The return type of the field.</param>
         /// <param name="asAutoProperty">The value determines whether field will be create as auto property.</param>
         /// <param name="field">The created field.</param>
-        public static bool TryCreateField(CSharpCompilation compilation, string name, Type returnType, bool asAutoProperty, out CodeGenerateContainerField field)
+        public static bool TryCreateField(Compilation compilation, string name, Type returnType, bool asAutoProperty, out CodeGenerateContainerField field)
         {
             if (compilation == null) throw new ArgumentNullException(nameof(compilation));
             if (name == null) throw new ArgumentNullException(nameof(name));

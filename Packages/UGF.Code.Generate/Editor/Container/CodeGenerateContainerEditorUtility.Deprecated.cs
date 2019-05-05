@@ -1,7 +1,6 @@
 using System;
 using System.Reflection;
 using Microsoft.CodeAnalysis;
-using Microsoft.CodeAnalysis.CSharp;
 using Microsoft.CodeAnalysis.Editing;
 
 namespace UGF.Code.Generate.Editor.Container
@@ -18,7 +17,7 @@ namespace UGF.Code.Generate.Editor.Container
         /// <param name="generator">The syntax generator.</param>
         /// <param name="type">The target type of the container.</param>
         [Obsolete("CreateUnit has been deprecated. Use overload with validation instead.")]
-        public static SyntaxNode CreateUnit(CSharpCompilation compilation, SyntaxGenerator generator, Type type)
+        public static SyntaxNode CreateUnit(Compilation compilation, SyntaxGenerator generator, Type type)
         {
             if (compilation == null) throw new ArgumentNullException(nameof(compilation));
             if (generator == null) throw new ArgumentNullException(nameof(generator));
@@ -54,7 +53,7 @@ namespace UGF.Code.Generate.Editor.Container
         /// <param name="type">The target type to generate container from.</param>
         /// <exception cref="ArgumentException">The specified type must be valid to generate container.</exception>
         [Obsolete("Create has been deprecated. Use overload with validation instead.")]
-        public static CodeGenerateContainer Create(CSharpCompilation compilation, Type type)
+        public static CodeGenerateContainer Create(Compilation compilation, Type type)
         {
             if (compilation == null) throw new ArgumentNullException(nameof(compilation));
             if (type == null) throw new ArgumentNullException(nameof(type));

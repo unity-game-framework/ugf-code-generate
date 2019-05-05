@@ -2,7 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Reflection;
-using Microsoft.CodeAnalysis.CSharp;
+using Microsoft.CodeAnalysis;
 using UGF.Code.Analysis.Editor;
 using UnityEngine;
 
@@ -12,7 +12,7 @@ namespace UGF.Code.Generate.Editor.Container.External
     {
         public static CodeGenerateContainerExternalValidation DefaultValidation { get; } = new CodeGenerateContainerExternalValidation();
 
-        public static CodeGenerateContainer CreateContainer(ICodeGenerateContainerExternalInfo info, ICodeGenerateContainerValidation validation = null, CSharpCompilation compilation = null)
+        public static CodeGenerateContainer CreateContainer(ICodeGenerateContainerExternalInfo info, ICodeGenerateContainerValidation validation = null, Compilation compilation = null)
         {
             if (info == null) throw new ArgumentNullException(nameof(info));
             if (validation == null) validation = DefaultValidation;
