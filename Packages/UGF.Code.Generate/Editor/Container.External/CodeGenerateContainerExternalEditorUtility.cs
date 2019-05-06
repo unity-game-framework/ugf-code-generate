@@ -12,6 +12,42 @@ namespace UGF.Code.Generate.Editor.Container.External
     {
         public static CodeGenerateContainerExternalValidation DefaultValidation { get; } = new CodeGenerateContainerExternalValidation();
 
+        public static CodeGenerateContainerExternalInfo CreateInfo(Type type, ICodeGenerateContainerValidation validation = null)
+        {
+            if (type == null) throw new ArgumentNullException(nameof(type));
+            if (validation == null) validation = DefaultValidation;
+
+            var info = new CodeGenerateContainerExternalInfo { TypeName = type.AssemblyQualifiedName };
+            IEnumerable<FieldInfo> fields = validation.GetFields(type);
+            IEnumerable<PropertyInfo> properties = validation.GetProperties(type);
+
+            foreach (FieldInfo field in fields)
+            {
+                if (validation.Validate(field))
+                {
+                    info.Members.Add(new CodeGenerateContainerExternalMemberInfo
+                    {
+                        Name = field.Name,
+                        Active = true
+                    });
+                }
+            }
+
+            foreach (PropertyInfo property in properties)
+            {
+                if (validation.Validate(property))
+                {
+                    info.Members.Add(new CodeGenerateContainerExternalMemberInfo
+                    {
+                        Name = property.Name,
+                        Active = true
+                    });
+                }
+            }
+
+            return info;
+        }
+
         public static CodeGenerateContainer CreateContainer(ICodeGenerateContainerExternalInfo info, ICodeGenerateContainerValidation validation = null, Compilation compilation = null)
         {
             if (info == null) throw new ArgumentNullException(nameof(info));
@@ -29,28 +65,22 @@ namespace UGF.Code.Generate.Editor.Container.External
 
             foreach (FieldInfo field in fields)
             {
-                if (CodeGenerateContainerEditorUtility.IsValidField(field))
+                if (validation.Validate(field) && info.TryGetMember(field.Name, out CodeGenerateContainerExternalMemberInfo member) && member.Active)
                 {
-                    if (info.TryGetMember(field.Name, out CodeGenerateContainerExternalMemberInfo member) && member.Active)
+                    if (CodeGenerateContainerEditorUtility.TryCreateField(compilation, field.Name, field.FieldType, false, out CodeGenerateContainerField containerField))
                     {
-                        if (CodeGenerateContainerEditorUtility.TryCreateField(compilation, field.Name, field.FieldType, false, out CodeGenerateContainerField containerField))
-                        {
-                            container.Fields.Add(containerField);
-                        }
+                        container.Fields.Add(containerField);
                     }
                 }
             }
 
             foreach (PropertyInfo property in properties)
             {
-                if (CodeGenerateContainerEditorUtility.IsValidProperty(property))
+                if (validation.Validate(property) && info.TryGetMember(property.Name, out CodeGenerateContainerExternalMemberInfo member) && member.Active)
                 {
-                    if (info.TryGetMember(property.Name, out CodeGenerateContainerExternalMemberInfo member) && member.Active)
+                    if (CodeGenerateContainerEditorUtility.TryCreateField(compilation, property.Name, property.PropertyType, true, out CodeGenerateContainerField containerField))
                     {
-                        if (CodeGenerateContainerEditorUtility.TryCreateField(compilation, property.Name, property.PropertyType, true, out CodeGenerateContainerField containerField))
-                        {
-                            container.Fields.Add(containerField);
-                        }
+                        container.Fields.Add(containerField);
                     }
                 }
             }

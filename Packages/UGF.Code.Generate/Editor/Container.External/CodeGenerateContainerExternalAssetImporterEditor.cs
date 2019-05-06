@@ -1,26 +1,25 @@
 using System;
-using System.IO;
+using UGF.Types.Editor;
+using UGF.Types.Editor.IMGUI;
 using UnityEditor;
 using UnityEditor.Experimental.AssetImporters;
 using UnityEngine;
 
 namespace UGF.Code.Generate.Editor.Container.External
 {
-    public abstract class CodeGenerateContainerExternalAssetImporterEditor<TInfo> : ScriptedImporterEditor where TInfo : class, ICodeGenerateContainerExternalInfo, new()
+    public abstract class CodeGenerateContainerExternalAssetImporterEditor : ScriptedImporterEditor
     {
         public override bool showImportedObject { get; } = false;
         protected override bool useAssetDrawPreview { get; } = false;
 
-        protected abstract ICodeGenerateContainerValidation Validation { get; }
-
+        protected CodeGenerateContainerExternalAssetImporterBase Importer { get; private set; }
         protected SerializedProperty InfoSerializedProperty { get; private set; }
+        protected virtual ICodeGenerateContainerValidation Validation { get; } = new CodeGenerateContainerExternalValidation();
 
-        private SerializedObject m_extraSerializedObject;
-        private AssetImporter m_importer;
         private SerializedProperty m_propertyScript;
         private SerializedProperty m_propertyTypeName;
         private SerializedProperty m_propertyMembers;
-        // private TypesDropdown m_dropdown;
+        private TypesDropdown m_dropdown;
         private bool m_validType;
         private Styles m_styles;
 
@@ -31,43 +30,18 @@ namespace UGF.Code.Generate.Editor.Container.External
             public readonly GUIStyle Box = new GUIStyle("Box");
         }
 
-        private sealed class Extra : ScriptableObject
-        {
-            [SerializeField] private TInfo m_info = new TInfo();
-
-            public TInfo Info { get { return m_info; } set { m_info = value; } }
-        }
-
         public override void OnEnable()
         {
             base.OnEnable();
 
-            m_extraSerializedObject = new SerializedObject(CreateInstance<Extra>());
-            m_importer = (AssetImporter)target;
-
-            InfoSerializedProperty = m_extraSerializedObject.FindProperty("m_info");
+            Importer = (CodeGenerateContainerExternalAssetImporterBase)target;
+            InfoSerializedProperty = serializedObject.FindProperty("m_info");
 
             m_propertyScript = serializedObject.FindProperty("m_Script");
             m_propertyTypeName = InfoSerializedProperty.FindPropertyRelative("m_typeName");
             m_propertyMembers = InfoSerializedProperty.FindPropertyRelative("m_members");
 
-            LoadInfo();
-
             ValidateType(m_propertyTypeName.stringValue);
-        }
-
-        public override void OnDisable()
-        {
-            base.OnDisable();
-
-            DestroyImmediate(m_extraSerializedObject.targetObject);
-
-            m_extraSerializedObject.Dispose();
-        }
-
-        public override bool HasModified()
-        {
-            return base.HasModified() || m_extraSerializedObject.hasModifiedProperties;
         }
 
         public override void OnInspectorGUI()
@@ -88,8 +62,6 @@ namespace UGF.Code.Generate.Editor.Container.External
 
             ApplyRevertGUI();
         }
-
-        protected abstract TInfo CreateInfo(Type type);
 
         protected virtual void OnDrawTypeSelection(SerializedProperty propertyTypeName)
         {
@@ -177,6 +149,31 @@ namespace UGF.Code.Generate.Editor.Container.External
             }
         }
 
+        protected virtual void OnTypeChanged(Type type)
+        {
+            CodeGenerateContainerExternalInfo info = CodeGenerateContainerExternalEditorUtility.CreateInfo(type, Validation);
+
+            m_propertyMembers.ClearArray();
+
+            for (int i = 0; i < info.Members.Count; i++)
+            {
+                CodeGenerateContainerExternalMemberInfo member = info.Members[i];
+
+                m_propertyMembers.InsertArrayElementAtIndex(m_propertyMembers.arraySize);
+
+                OnTypeChangedSetupDefaultMemberInfo(m_propertyMembers, m_propertyMembers.GetArrayElementAtIndex(i), member, i);
+            }
+        }
+
+        protected virtual void OnTypeChangedSetupDefaultMemberInfo(SerializedProperty propertyMembers, SerializedProperty propertyMember, CodeGenerateContainerExternalMemberInfo memberInfo, int index)
+        {
+            SerializedProperty propertyName = propertyMember.FindPropertyRelative("m_name");
+            SerializedProperty propertyActive = propertyMember.FindPropertyRelative("m_active");
+
+            propertyName.stringValue = memberInfo.Name;
+            propertyActive.boolValue = true;
+        }
+
         protected void SetAllMembersActive(bool state)
         {
             SetAllMembersActive(m_propertyMembers, state);
@@ -193,65 +190,22 @@ namespace UGF.Code.Generate.Editor.Container.External
             }
         }
 
-        protected void SetInfo(TInfo info)
-        {
-            var extra = (Extra)m_extraSerializedObject.targetObject;
-            var copy = JsonUtility.FromJson<TInfo>(JsonUtility.ToJson(info));
-
-            extra.Info = copy;
-
-            m_extraSerializedObject.Update();
-        }
-
-        protected void SaveInfo()
-        {
-            m_extraSerializedObject.ApplyModifiedProperties();
-
-            var extra = (Extra)m_extraSerializedObject.targetObject;
-            string text = JsonUtility.ToJson(extra.Info, true).Replace("\n", "\r\n");
-
-            File.WriteAllText(m_importer.assetPath, text);
-        }
-
-        protected void LoadInfo()
-        {
-            var asset = (TextAsset)assetTarget;
-            var extra = (Extra)m_extraSerializedObject.targetObject;
-
-            JsonUtility.FromJsonOverwrite(asset.text, extra.Info);
-
-            m_extraSerializedObject.Update();
-        }
-
         protected override void Apply()
         {
             base.Apply();
 
-            SaveInfo();
-
-            AssetDatabase.ImportAsset(m_importer.assetPath);
-        }
-
-        protected override void ResetValues()
-        {
-            base.ResetValues();
-
-            m_extraSerializedObject?.Update();
-        }
-
-        private void DrawTypeDropdown()
-        {
+            Importer.Save();
         }
 
         private void ShowDropdown(Rect rect)
         {
-            // if (m_dropdown == null)
-            // {
-            //     m_dropdown = TypesEditorGUIUtility.GetTypesDropdown(OnDropdownValidateType);
-            //     m_dropdown.Selected += OnDropdownTypeSelected;
-            // }
-            //
-            // m_dropdown.Show(rect);
+            if (m_dropdown == null)
+            {
+                m_dropdown = TypesEditorGUIUtility.GetTypesDropdown(OnDropdownValidateType);
+                m_dropdown.Selected += OnDropdownTypeSelected;
+            }
+
+            m_dropdown.Show(rect);
         }
 
         private bool OnDropdownValidateType(Type type)
@@ -263,11 +217,9 @@ namespace UGF.Code.Generate.Editor.Container.External
         {
             m_propertyTypeName.stringValue = type.AssemblyQualifiedName;
 
-            TInfo info = CreateInfo(type);
+            OnTypeChanged(type);
 
-            SetInfo(info);
-
-            ValidateType(type.AssemblyQualifiedName);
+            ValidateType(m_propertyTypeName.stringValue);
         }
 
         private void ValidateType(string typeName)

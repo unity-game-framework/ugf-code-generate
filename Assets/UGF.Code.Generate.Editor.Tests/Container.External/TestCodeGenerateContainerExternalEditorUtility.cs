@@ -8,6 +8,12 @@ namespace UGF.Code.Generate.Editor.Tests.Container.External
     public class TestCodeGenerateContainerExternalEditorUtility
     {
         [Test]
+        public void CreateInfo()
+        {
+            throw new NotImplementedException();
+        }
+
+        [Test]
         public void CreateContainer()
         {
             var info = new CodeGenerateContainerExternalInfo

@@ -4,6 +4,7 @@ using System.Linq;
 using System.Reflection;
 using NUnit.Framework;
 using UGF.Code.Generate.Editor.Container;
+using UnityEngine;
 
 namespace UGF.Code.Generate.Editor.Tests.Container
 {
@@ -39,8 +40,10 @@ namespace UGF.Code.Generate.Editor.Tests.Container
         public void ValidateType()
         {
             bool result = m_validation.Validate(typeof(TestValidationTarget));
+            bool result0 = m_validation.Validate(typeof(Vector2));
 
             Assert.True(result);
+            Assert.True(result0);
         }
 
         [Test]
@@ -87,32 +90,40 @@ namespace UGF.Code.Generate.Editor.Tests.Container
         public void IsTypeContainer()
         {
             bool result = m_testValidation.IsTypeContainer(typeof(TestValidationTarget));
+            bool result0 = m_testValidation.IsTypeContainer(typeof(Vector2));
 
             Assert.True(result);
+            Assert.True(result0);
         }
 
         [Test]
         public void IsTypeHasDefaultConstructor()
         {
             bool result = m_testValidation.IsTypeHasDefaultConstructor(typeof(TestValidationTarget));
+            bool result0 = m_testValidation.IsTypeHasDefaultConstructor(typeof(Vector2));
 
             Assert.True(result);
+            Assert.True(result0);
         }
 
         [Test]
         public void IsTypeHasAnyValidFields()
         {
             bool result = m_testValidation.IsTypeHasAnyValidFields(typeof(TestValidationTarget));
+            bool result0 = m_testValidation.IsTypeHasAnyValidFields(typeof(Vector2));
 
             Assert.True(result);
+            Assert.True(result0);
         }
 
         [Test]
         public void IsTypeHasAnyValidProperties()
         {
             bool result = m_testValidation.IsTypeHasAnyValidProperties(typeof(TestValidationTarget));
+            bool result0 = m_testValidation.IsTypeHasAnyValidProperties(typeof(Vector2));
 
             Assert.True(result);
+            Assert.False(result0);
         }
     }
 

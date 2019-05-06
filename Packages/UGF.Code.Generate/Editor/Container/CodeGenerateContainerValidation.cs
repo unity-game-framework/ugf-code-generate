@@ -25,17 +25,10 @@ namespace UGF.Code.Generate.Editor.Container
                 return false;
             }
 
-            if (HasAnyValidFields && !IsTypeHasAnyValidFields(type))
-            {
-                return false;
-            }
+            bool hasAnyValidFields = !HasAnyValidFields || IsTypeHasAnyValidFields(type);
+            bool hasAnyValidProperties = !HasAnyValidProperties || IsTypeHasAnyValidProperties(type);
 
-            if (HasAnyValidProperties && !IsTypeHasAnyValidProperties(type))
-            {
-                return false;
-            }
-
-            return true;
+            return hasAnyValidFields || hasAnyValidProperties;
         }
 
         public virtual bool Validate(FieldInfo field)
