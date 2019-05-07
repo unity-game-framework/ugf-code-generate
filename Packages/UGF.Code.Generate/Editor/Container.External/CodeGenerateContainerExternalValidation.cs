@@ -4,11 +4,29 @@ using Object = UnityEngine.Object;
 
 namespace UGF.Code.Generate.Editor.Container.External
 {
+    /// <summary>
+    /// Represents external type validation to determines what types can be container and what members valid for generation.
+    /// </summary>
     public class CodeGenerateContainerExternalValidation : CodeGenerateContainerValidation
     {
+        /// <summary>
+        /// Gets or sets value that determines whether to check whether specified type is not an attribute. (Default value is true)
+        /// </summary>
         public bool IsNotAttribute { get; set; } = true;
+
+        /// <summary>
+        /// Gets or sets value that determines whether to check whether specified type is not an Unity Object. (Default value is true)
+        /// </summary>
         public bool IsNotUnity { get; set; } = true;
+
+        /// <summary>
+        /// Gets or sets value that determines whether to check whether specified type is not deprecated. (Default value is true)
+        /// </summary>
         public bool IsNotObsolete { get; set; } = true;
+
+        /// <summary>
+        /// Gets or sets value that determines whether to check whether specified type is not special type. (Default value is true)
+        /// </summary>
         public bool IsNotSpecial { get; set; } = true;
 
         public override bool Validate(Type type)
@@ -41,21 +59,37 @@ namespace UGF.Code.Generate.Editor.Container.External
             return true;
         }
 
+        /// <summary>
+        /// Determines whether specified type is attribute type.
+        /// </summary>
+        /// <param name="type">The type to check.</param>
         protected virtual bool IsTypeAttribute(Type type)
         {
             return typeof(Attribute).IsAssignableFrom(type);
         }
 
+        /// <summary>
+        /// Determines whether specified type is Unity Object.
+        /// </summary>
+        /// <param name="type">The type to check.</param>
         protected virtual bool IsTypeUnity(Type type)
         {
             return typeof(Object).IsAssignableFrom(type);
         }
 
+        /// <summary>
+        /// Determines whether specified type contains obsolete attribute.
+        /// </summary>
+        /// <param name="type">The type to check.</param>
         protected virtual bool IsTypeObsolete(Type type)
         {
             return type.IsDefined(typeof(ObsoleteAttribute));
         }
 
+        /// <summary>
+        /// Determines whether specified type is a special type.
+        /// </summary>
+        /// <param name="type">The type to check.</param>
         protected virtual bool IsTypeSpecial(Type type)
         {
             return type.IsSpecialName;

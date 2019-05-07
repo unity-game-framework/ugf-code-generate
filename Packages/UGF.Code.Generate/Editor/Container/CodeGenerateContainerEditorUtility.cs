@@ -12,8 +12,18 @@ namespace UGF.Code.Generate.Editor.Container
     /// </summary>
     public static partial class CodeGenerateContainerEditorUtility
     {
+        /// <summary>
+        /// Gets default container type validation.
+        /// </summary>
         public static CodeGenerateContainerValidation DefaultValidation { get; } = new CodeGenerateContainerValidation();
 
+        /// <summary>
+        /// Creates compilation unit from the specified container type using validation.
+        /// </summary>
+        /// <param name="type">The type of the container.</param>
+        /// <param name="validation">The validation to use.</param>
+        /// <param name="compilation">The project compilation.</param>
+        /// <param name="generator">The syntax generator.</param>
         public static SyntaxNode CreateUnit(Type type, ICodeGenerateContainerValidation validation = null, Compilation compilation = null, SyntaxGenerator generator = null)
         {
             if (type == null) throw new ArgumentNullException(nameof(type));
@@ -26,6 +36,12 @@ namespace UGF.Code.Generate.Editor.Container
             return CreateUnit(container, generator, type.Namespace);
         }
 
+        /// <summary>
+        /// Creates compilation unit from the specified container.
+        /// </summary>
+        /// <param name="container">The container used to generate compilation unit.</param>
+        /// <param name="generator">The syntax generator.</param>
+        /// <param name="namespaceRoot">The namespace of the container.</param>
         public static SyntaxNode CreateUnit(CodeGenerateContainer container, SyntaxGenerator generator = null, string namespaceRoot = null)
         {
             if (container == null) throw new ArgumentNullException(nameof(container));
@@ -48,6 +64,15 @@ namespace UGF.Code.Generate.Editor.Container
             return unit;
         }
 
+        /// <summary>
+        /// Creates container from the specified type using specified validation.
+        /// <para>
+        /// The specified validation will not be used to validate specified type.
+        /// </para>
+        /// </summary>
+        /// <param name="type">The target type.</param>
+        /// <param name="validation">The type validation to use.</param>
+        /// <param name="compilation">The project compilation.</param>
         public static CodeGenerateContainer Create(Type type, ICodeGenerateContainerValidation validation = null, Compilation compilation = null)
         {
             if (type == null) throw new ArgumentNullException(nameof(type));

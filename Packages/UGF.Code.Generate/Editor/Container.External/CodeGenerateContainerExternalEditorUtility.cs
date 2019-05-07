@@ -8,10 +8,21 @@ using UnityEngine;
 
 namespace UGF.Code.Generate.Editor.Container.External
 {
+    /// <summary>
+    /// Provides utilities to work with container external types in the editor.
+    /// </summary>
     public static class CodeGenerateContainerExternalEditorUtility
     {
+        /// <summary>
+        /// Gets the default container external type validation.
+        /// </summary>
         public static CodeGenerateContainerExternalValidation DefaultValidation { get; } = new CodeGenerateContainerExternalValidation();
 
+        /// <summary>
+        /// Creates container external type information from the specified type and validation.
+        /// </summary>
+        /// <param name="type">The target type.</param>
+        /// <param name="validation">The container type validation to use.</param>
         public static CodeGenerateContainerExternalInfo CreateInfo(Type type, ICodeGenerateContainerValidation validation = null)
         {
             if (type == null) throw new ArgumentNullException(nameof(type));
@@ -48,6 +59,12 @@ namespace UGF.Code.Generate.Editor.Container.External
             return info;
         }
 
+        /// <summary>
+        /// Creates container from the specified external type information and validation.
+        /// </summary>
+        /// <param name="info">The container external type information.</param>
+        /// <param name="validation">The container type validation to use.</param>
+        /// <param name="compilation">The project compilation.</param>
         public static CodeGenerateContainer CreateContainer(ICodeGenerateContainerExternalInfo info, ICodeGenerateContainerValidation validation = null, Compilation compilation = null)
         {
             if (info == null) throw new ArgumentNullException(nameof(info));
@@ -88,6 +105,11 @@ namespace UGF.Code.Generate.Editor.Container.External
             return container;
         }
 
+        /// <summary>
+        /// Tries to get container external type information from the file at the specified asset path.
+        /// </summary>
+        /// <param name="path">The path of the asset.</param>
+        /// <param name="info">The result information.</param>
         public static bool TryGetInfoFromAssetPath<T>(string path, out T info) where T : class, ICodeGenerateContainerExternalInfo
         {
             if (TryGetInfoFromAssetPath(path, typeof(T), out ICodeGenerateContainerExternalInfo interfaceInfo))
@@ -101,6 +123,12 @@ namespace UGF.Code.Generate.Editor.Container.External
             return false;
         }
 
+        /// <summary>
+        /// Tries to get container external type information from the file at the specified asset path.
+        /// </summary>
+        /// <param name="path">The path of the asset.</param>
+        /// <param name="assetType">The type of the information.</param>
+        /// <param name="info">The result information.</param>
         public static bool TryGetInfoFromAssetPath(string path, Type assetType, out ICodeGenerateContainerExternalInfo info)
         {
             if (File.Exists(path))

@@ -4,12 +4,22 @@ using UnityEngine;
 
 namespace UGF.Code.Generate.Editor.Container.External
 {
+    /// <summary>
+    /// Represents abstract implementation of the container external type information.
+    /// </summary>
     public abstract class CodeGenerateContainerExternalInfoBase<TMemberInfo> : ICodeGenerateContainerExternalInfo where TMemberInfo : CodeGenerateContainerExternalMemberInfo
     {
         [SerializeField] private string m_typeName;
         [SerializeField] private List<TMemberInfo> m_members = new List<TMemberInfo>();
 
+        /// <summary>
+        /// Gets or sets the name of the target type.
+        /// </summary>
         public string TypeName { get { return m_typeName; } set { m_typeName = value; } }
+
+        /// <summary>
+        /// Gets collection of the members.
+        /// </summary>
         public List<TMemberInfo> Members { get { return m_members; } }
 
         public bool TryGetMember(string name, out TMemberInfo member)

@@ -93,6 +93,15 @@ namespace UGF.Code.Generate.Editor
             return true;
         }
 
+        /// <summary>
+        /// Tries to construct type symbol from the specified type.
+        /// <para>
+        /// If the specified type is generic, will construct type symbol based on generic definition and arguments.
+        /// </para>
+        /// </summary>
+        /// <param name="compilation">The compilation to use.</param>
+        /// <param name="type">The type to construct.</param>
+        /// <param name="typeSymbol">The constructed type.</param>
         public static bool TryConstructTypeSymbol(this Compilation compilation, Type type, out INamedTypeSymbol typeSymbol)
         {
             if (compilation == null) throw new ArgumentNullException(nameof(compilation));
@@ -112,6 +121,13 @@ namespace UGF.Code.Generate.Editor
             return typeSymbol != null;
         }
 
+        /// <summary>
+        /// Tries to construct type symbol from the generic definition and arguments.
+        /// </summary>
+        /// <param name="compilation">The compilation to use.</param>
+        /// <param name="definition">The definition of the generic type.</param>
+        /// <param name="arguments">The arguments of the generic to construct.</param>
+        /// <param name="typeSymbol">The constructed type symbol.</param>
         public static bool TryConstructGenericTypeSymbol(this Compilation compilation, Type definition, IReadOnlyList<Type> arguments, out INamedTypeSymbol typeSymbol)
         {
             if (compilation == null) throw new ArgumentNullException(nameof(compilation));
@@ -146,6 +162,11 @@ namespace UGF.Code.Generate.Editor
             return false;
         }
 
+        /// <summary>
+        /// Tries to get generic name syntax from the specified type syntax.
+        /// </summary>
+        /// <param name="typeSyntax">The type syntax to get from.</param>
+        /// <param name="genericNameSyntax">The found generic name syntax.</param>
         public static bool TryGetGenericNameSyntax(this TypeSyntax typeSyntax, out GenericNameSyntax genericNameSyntax)
         {
             if (typeSyntax == null) throw new ArgumentNullException(nameof(typeSyntax));

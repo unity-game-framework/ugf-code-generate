@@ -4,10 +4,16 @@ using UnityEngine;
 
 namespace UGF.Code.Generate.Editor.Container.External
 {
+    /// <summary>
+    /// Represents abstract implementation of the asset importer for the container external type information.
+    /// </summary>
     public abstract class CodeGenerateContainerExternalAssetImporter<TInfo> : CodeGenerateContainerExternalAssetImporterBase where TInfo : class, ICodeGenerateContainerExternalInfo, new()
     {
         [SerializeField] private TInfo m_info = new TInfo();
 
+        /// <summary>
+        /// Gets importer information.
+        /// </summary>
         public TInfo Info { get { return m_info; } }
 
         public override void OnImportAsset(AssetImportContext context)
@@ -21,6 +27,9 @@ namespace UGF.Code.Generate.Editor.Container.External
             context.SetMainObject(asset);
         }
 
+        /// <summary>
+        /// Saves information as Json to the asset path of the importer.
+        /// </summary>
         public override void Save()
         {
             string source = JsonUtility.ToJson(m_info, true).Replace("\n", "\r\n");

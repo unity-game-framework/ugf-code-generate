@@ -7,20 +7,38 @@ using UnityEngine;
 
 namespace UGF.Code.Generate.Editor.Container.External
 {
+    /// <summary>
+    /// Represents abstract implementation of the container external type information asset importer.
+    /// </summary>
     public abstract class CodeGenerateContainerExternalAssetImporterEditor : ScriptedImporterEditor
     {
         public override bool showImportedObject { get; } = false;
         protected override bool useAssetDrawPreview { get; } = false;
 
+        /// <summary>
+        /// Gets the target importer of the editor.
+        /// </summary>
         protected CodeGenerateContainerExternalAssetImporterBase Importer { get; private set; }
+
+        /// <summary>
+        /// Gets the container external type information as serialized property.
+        /// </summary>
         protected SerializedProperty InfoSerializedProperty { get; private set; }
+
+        /// <summary>
+        /// Gets the container type validation.
+        /// </summary>
         protected virtual ICodeGenerateContainerValidation Validation { get; } = new CodeGenerateContainerExternalValidation();
+
+        /// <summary>
+        /// Gets value that determines whether target information has valid target type information.
+        /// </summary>
+        protected bool IsTypeValid { get; private set; }
 
         private SerializedProperty m_propertyScript;
         private SerializedProperty m_propertyTypeName;
         private SerializedProperty m_propertyMembers;
         private TypesDropdown m_dropdown;
-        private bool m_validType;
         private Styles m_styles;
 
         private sealed class Styles
@@ -63,6 +81,10 @@ namespace UGF.Code.Generate.Editor.Container.External
             ApplyRevertGUI();
         }
 
+        /// <summary>
+        /// Draws type selection GUI.
+        /// </summary>
+        /// <param name="propertyTypeName">The serialized property of the type name field.</param>
         protected virtual void OnDrawTypeSelection(SerializedProperty propertyTypeName)
         {
             Rect rect = EditorGUILayout.GetControlRect();
@@ -77,12 +99,16 @@ namespace UGF.Code.Generate.Editor.Container.External
             }
         }
 
+        /// <summary>
+        /// Draws type information.
+        /// </summary>
+        /// <param name="propertyTypeName">The serialized property of the type name member.</param>
         protected virtual void OnDrawTypeInfo(SerializedProperty propertyTypeName)
         {
             EditorGUILayout.Space();
             EditorGUILayout.LabelField("Type Info", EditorStyles.boldLabel);
 
-            if (m_validType)
+            if (IsTypeValid)
             {
                 EditorGUILayout.HelpBox(propertyTypeName.stringValue, MessageType.None);
             }
@@ -99,6 +125,10 @@ namespace UGF.Code.Generate.Editor.Container.External
             }
         }
 
+        /// <summary>
+        /// Draw members from the container external information.
+        /// </summary>
+        /// <param name="propertyMembers">The serialized property of the members.</param>
         protected virtual void OnDrawMembers(SerializedProperty propertyMembers)
         {
             EditorGUILayout.Space();
@@ -120,6 +150,11 @@ namespace UGF.Code.Generate.Editor.Container.External
             }
         }
 
+        /// <summary>
+        /// Draws member info from the container external information.
+        /// </summary>
+        /// <param name="propertyMembers">The serialized property of the members.</param>
+        /// <param name="index">The index in the members collection.</param>
         protected virtual void OnDrawMember(SerializedProperty propertyMembers, int index)
         {
             SerializedProperty propertyMember = propertyMembers.GetArrayElementAtIndex(index);
@@ -129,6 +164,9 @@ namespace UGF.Code.Generate.Editor.Container.External
             propertyActive.boolValue = EditorGUILayout.Toggle(propertyName.stringValue, propertyActive.boolValue);
         }
 
+        /// <summary>
+        /// Draws members selection control at the bottom of the members collection.
+        /// </summary>
         protected virtual void OnDrawMembersBottomControls()
         {
             EditorGUILayout.Space();
@@ -149,6 +187,10 @@ namespace UGF.Code.Generate.Editor.Container.External
             }
         }
 
+        /// <summary>
+        /// Occurs after type dropdown change type.
+        /// </summary>
+        /// <param name="type">The selected type.</param>
         protected virtual void OnTypeChanged(Type type)
         {
             CodeGenerateContainerExternalInfo info = CodeGenerateContainerExternalEditorUtility.CreateInfo(type, Validation);
@@ -165,6 +207,13 @@ namespace UGF.Code.Generate.Editor.Container.External
             }
         }
 
+        /// <summary>
+        /// Occurs after type dropdown change type and require to setup member information from the specified info.
+        /// </summary>
+        /// <param name="propertyMembers">The serialized property of the members.</param>
+        /// <param name="propertyMember">The serialized property of the member, that require to setup.</param>
+        /// <param name="memberInfo">The member information from the type.</param>
+        /// <param name="index">The index of the member.</param>
         protected virtual void OnTypeChangedSetupDefaultMemberInfo(SerializedProperty propertyMembers, SerializedProperty propertyMember, CodeGenerateContainerExternalMemberInfo memberInfo, int index)
         {
             SerializedProperty propertyName = propertyMember.FindPropertyRelative("m_name");
@@ -174,11 +223,20 @@ namespace UGF.Code.Generate.Editor.Container.External
             propertyActive.boolValue = true;
         }
 
+        /// <summary>
+        /// Sets active state to the all members.
+        /// </summary>
+        /// <param name="state">The state of the member.</param>
         protected void SetAllMembersActive(bool state)
         {
             SetAllMembersActive(m_propertyMembers, state);
         }
 
+        /// <summary>
+        /// Sets active state to the all members from the specified serialized property.
+        /// </summary>
+        /// <param name="propertyMembers">The serialized property of the members to change.</param>
+        /// <param name="state">The state of the member.</param>
         protected void SetAllMembersActive(SerializedProperty propertyMembers, bool state)
         {
             for (int i = 0; i < propertyMembers.arraySize; i++)
@@ -226,7 +284,7 @@ namespace UGF.Code.Generate.Editor.Container.External
         {
             Type type = Type.GetType(typeName);
 
-            m_validType = type != null && Validation.Validate(type);
+            IsTypeValid = type != null && Validation.Validate(type);
         }
     }
 }
