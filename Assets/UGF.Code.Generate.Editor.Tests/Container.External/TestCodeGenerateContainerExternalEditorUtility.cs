@@ -10,7 +10,19 @@ namespace UGF.Code.Generate.Editor.Tests.Container.External
         [Test]
         public void CreateInfo()
         {
-            throw new NotImplementedException();
+            CodeGenerateContainerExternalInfo info = CodeGenerateContainerExternalEditorUtility.CreateInfo(typeof(TestTargetContainerExternal));
+
+            Assert.NotNull(info);
+
+            bool result1 = info.TryGetTargetType(out Type type);
+
+            Assert.True(result1);
+            Assert.NotNull(type);
+            Assert.AreEqual(typeof(TestTargetContainerExternal), type);
+            Assert.AreEqual(3, info.Members.Count);
+            Assert.True(info.Members.Exists(x => x.Name == "Field"));
+            Assert.True(info.Members.Exists(x => x.Name == "Field2"));
+            Assert.True(info.Members.Exists(x => x.Name == "Property"));
         }
 
         [Test]
