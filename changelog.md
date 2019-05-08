@@ -9,13 +9,24 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - [Milestone](https://github.com/unity-game-framework/ugf-code-generate/milestone/0?closed=1)
 
 ### Added
-- Nothing.
+- Package dependencies:
+    - `com.ugf.assemblies`: `2.1.1`.
+- Container External to generate container from external type. (#3)
+- `CodeGenerateContainerValidation` to determine what types can be used to generate containers.
+- `CodeGenerateContainerEditorUtility.CreateUnit` and `CodeGenerateContainerEditorUtility.Create` overloads with validation.
+- `TryGetAnyTypeByMetadataName` to get any found type symbol by the metadata name. (Not support generics)
+- `TryConstructTypeSymbol` to construct type symbol from the specified type. (Support generics) (#5)
+- `TryConstructGenericTypeSymbol` to construct type symbol from the specified generic definition and arguments.
+- `TryGetGenericNameSyntax` to get generic name syntax from the specified type syntax, if possible.
 
 ### Changed
 - Nothing.
 
 ### Deprecated
-- Nothing.
+- `CodeGenerateContainerEditorUtility.CreateUnit` and `CodeGenerateContainerEditorUtility.Create` has been deprecated, use overloads with validation instead.
+- `TryGetTypeByMetadataName` has been deprecated, use `TryGetAnyTypeByMetadataName` to get type symbol from the metadata name
+or `TryConstructTypeSymbol` to get type symbol from the `Type`.
+- `TryGetGenericTypeByMetadataName` has been deprecated, use `TryConstructGenericTypeSymbol` instead.
 
 ### Removed
 - Nothing.
