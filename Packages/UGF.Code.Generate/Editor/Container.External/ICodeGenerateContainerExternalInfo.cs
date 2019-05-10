@@ -12,6 +12,13 @@ namespace UGF.Code.Generate.Editor.Container.External
         /// </summary>
         /// <param name="name">The name of the member to find.</param>
         /// <param name="member">The found member.</param>
+        bool TryGetMember<T>(string name, out T member) where T : CodeGenerateContainerExternalMemberInfo;
+
+        /// <summary>
+        /// Tries to get member info by the specified name.
+        /// </summary>
+        /// <param name="name">The name of the member to find.</param>
+        /// <param name="member">The found member.</param>
         bool TryGetMember(string name, out CodeGenerateContainerExternalMemberInfo member);
 
         /// <summary>

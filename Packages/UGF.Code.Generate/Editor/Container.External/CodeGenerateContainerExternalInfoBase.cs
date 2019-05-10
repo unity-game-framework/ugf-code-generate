@@ -22,6 +22,18 @@ namespace UGF.Code.Generate.Editor.Container.External
         /// </summary>
         public List<TMemberInfo> Members { get { return m_members; } }
 
+        public bool TryGetMember<T>(string name, out T member) where T : CodeGenerateContainerExternalMemberInfo
+        {
+            if (TryGetMember(name, out TMemberInfo memberInfo) && memberInfo is T cast)
+            {
+                member = cast;
+                return true;
+            }
+
+            member = default;
+            return false;
+        }
+
         public bool TryGetMember(string name, out TMemberInfo member)
         {
             for (int i = 0; i < m_members.Count; i++)
