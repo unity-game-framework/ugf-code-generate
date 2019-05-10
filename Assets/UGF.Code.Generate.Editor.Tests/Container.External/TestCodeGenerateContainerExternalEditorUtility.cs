@@ -1,4 +1,6 @@
 using System;
+using System.IO;
+using Microsoft.CodeAnalysis;
 using NUnit.Framework;
 using UGF.Code.Generate.Editor.Container;
 using UGF.Code.Generate.Editor.Container.External;
@@ -7,6 +9,8 @@ namespace UGF.Code.Generate.Editor.Tests.Container.External
 {
     public class TestCodeGenerateContainerExternalEditorUtility
     {
+        private readonly string m_target = "Assets/UGF.Code.Generate.Editor.Tests/Container/TestTargetContainer3.txt";
+
         [Test]
         public void CreateInfo()
         {
@@ -23,6 +27,23 @@ namespace UGF.Code.Generate.Editor.Tests.Container.External
             Assert.True(info.Members.Exists(x => x.Name == "Field"));
             Assert.True(info.Members.Exists(x => x.Name == "Field2"));
             Assert.True(info.Members.Exists(x => x.Name == "Property"));
+        }
+
+        [Test]
+        public void CreateUnit()
+        {
+            CodeGenerateContainerExternalInfo info = CodeGenerateContainerExternalEditorUtility.CreateInfo(typeof(Target));
+
+            Assert.NotNull(info);
+
+            SyntaxNode unit = CodeGenerateContainerExternalEditorUtility.CreateUnit(info);
+
+            Assert.NotNull(unit);
+
+            string result = unit.NormalizeWhitespace().ToFullString();
+            string expected = File.ReadAllText(m_target);
+
+            Assert.AreEqual(expected, result);
         }
 
         [Test]

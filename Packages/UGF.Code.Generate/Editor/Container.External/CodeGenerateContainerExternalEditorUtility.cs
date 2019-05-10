@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.IO;
 using System.Reflection;
 using Microsoft.CodeAnalysis;
+using Microsoft.CodeAnalysis.Editing;
 using UGF.Code.Analysis.Editor;
 using UnityEngine;
 
@@ -60,6 +61,30 @@ namespace UGF.Code.Generate.Editor.Container.External
         }
 
         /// <summary>
+        /// Creates compilation syntax unit from the specified external type information and validation.
+        /// </summary>
+        /// <param name="info">The container external type information.</param>
+        /// <param name="validation">The container type validation to use.</param>
+        /// <param name="compilation">The project compilation.</param>
+        /// <param name="generator">The syntax generator.</param>
+        public static SyntaxNode CreateUnit(ICodeGenerateContainerExternalInfo info, ICodeGenerateContainerValidation validation = null, Compilation compilation = null, SyntaxGenerator generator = null)
+        {
+            if (info == null) throw new ArgumentNullException(nameof(info));
+            if (validation == null) validation = DefaultValidation;
+            if (compilation == null) compilation = CodeAnalysisEditorUtility.ProjectCompilation;
+            if (generator == null) generator = CodeAnalysisEditorUtility.Generator;
+
+            if (!info.TryGetTargetType(out Type type))
+            {
+                throw new ArgumentException("The specified container external type info has invalid target type information.", nameof(info));
+            }
+
+            CodeGenerateContainer container = CreateContainer(info, validation, compilation);
+
+            return CodeGenerateContainerEditorUtility.CreateUnit(container, generator, type.Namespace);
+        }
+
+        /// <summary>
         /// Creates container from the specified external type information and validation.
         /// </summary>
         /// <param name="info">The container external type information.</param>
@@ -73,7 +98,7 @@ namespace UGF.Code.Generate.Editor.Container.External
 
             if (!info.TryGetTargetType(out Type type))
             {
-                throw new ArgumentException("The specified container external info not valid.", nameof(info));
+                throw new ArgumentException("The specified container external type info has invalid target type information.", nameof(info));
             }
 
             var container = new CodeGenerateContainer(type.Name, type.IsValueType);
