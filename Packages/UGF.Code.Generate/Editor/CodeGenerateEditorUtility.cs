@@ -1,5 +1,6 @@
 ﻿using System;
 using System.IO;
+using System.Text;
 using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.CSharp;
 
@@ -75,6 +76,40 @@ namespace UGF.Code.Generate.Editor
             walker.Visit(tree.GetRoot());
 
             return walker.Result;
+        }
+
+        /// <summary>
+        /// Gets path for generated source from the specified path with additional label.
+        /// </summary>
+        /// <param name="path">The path used to generated.</param>
+        /// <param name="label">The additional label.</param>
+        public static string GetPathForGeneratedScript(string path, string label = null)
+        {
+            if (string.IsNullOrEmpty(path)) throw new ArgumentNullException(nameof(path));
+
+            var builder = new StringBuilder();
+            string directory = Path.GetDirectoryName(path);
+            string name = Path.GetFileNameWithoutExtension(path);
+
+            if (!string.IsNullOrEmpty(directory))
+            {
+                directory = directory.Replace('\\', '/');
+
+                builder.Append(directory);
+                builder.Append('/');
+            }
+
+            builder.Append(name);
+
+            if (!string.IsNullOrEmpty(label))
+            {
+                builder.Append('.');
+                builder.Append(label);
+            }
+
+            builder.Append(".Generated.cs");
+
+            return builder.ToString();
         }
     }
 }

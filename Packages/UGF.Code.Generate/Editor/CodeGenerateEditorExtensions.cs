@@ -132,6 +132,7 @@ namespace UGF.Code.Generate.Editor
         {
             if (compilation == null) throw new ArgumentNullException(nameof(compilation));
             if (definition == null) throw new ArgumentNullException(nameof(definition));
+            if (!definition.IsGenericTypeDefinition) throw new ArgumentException("The specified type is not a generic type definition.", nameof(definition));
             if (arguments == null) throw new ArgumentNullException(nameof(arguments));
             if (arguments.Count == 0) throw new ArgumentException("The specified arguments collection is empty.", nameof(arguments));
 
