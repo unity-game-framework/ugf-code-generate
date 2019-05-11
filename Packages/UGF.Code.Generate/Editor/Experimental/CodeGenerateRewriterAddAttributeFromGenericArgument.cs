@@ -9,10 +9,10 @@ namespace UGF.Code.Generate.Editor.Experimental
     public class CodeGenerateRewriterAddAttributeFromGenericArgument : CSharpSyntaxRewriter
     {
         public SyntaxGenerator Generator { get; }
-        public TypeSyntax AttributeType { get; }
+        public SyntaxNode AttributeType { get; }
         public string GenericTypeIdentifier { get; }
 
-        public CodeGenerateRewriterAddAttributeFromGenericArgument(SyntaxGenerator generator, TypeSyntax attributeType, string genericTypeIdentifier)
+        public CodeGenerateRewriterAddAttributeFromGenericArgument(SyntaxGenerator generator, SyntaxNode attributeType, string genericTypeIdentifier)
         {
             Generator = generator ?? throw new ArgumentNullException(nameof(generator));
             AttributeType = attributeType ?? throw new ArgumentNullException(nameof(attributeType));
