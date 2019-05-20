@@ -38,7 +38,7 @@ namespace UGF.Code.Generate.Editor
         /// <param name="generator">The syntax generator used to apply attribute.</param>
         /// <param name="attribute">The syntax node attribute to apply.</param>
         /// <param name="validate">The delegate handler to validate declaration.</param>
-        public CodeGenerateRewriterAddAttributeToNode(SyntaxGenerator generator, SyntaxNode attribute, CodeGenerateRewriterAddAttributeToNodeValidate validate = null) : base(false)
+        public CodeGenerateRewriterAddAttributeToNode(SyntaxGenerator generator, SyntaxNode attribute, CodeGenerateRewriterAddAttributeToNodeValidate validate = null)
         {
             Generator = generator ?? throw new ArgumentNullException(nameof(generator));
             Attribute = attribute ?? throw new ArgumentNullException(nameof(attribute));

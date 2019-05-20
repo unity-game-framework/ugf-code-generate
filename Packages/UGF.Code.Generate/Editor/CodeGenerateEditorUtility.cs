@@ -1,5 +1,6 @@
 ﻿using System;
 using System.IO;
+using System.Text;
 using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.CSharp;
 
@@ -39,7 +40,7 @@ namespace UGF.Code.Generate.Editor
         /// <param name="compilation">The project compilation.</param>
         /// <param name="path">The path of the source script.</param>
         /// <param name="attributeType">The type of the attribute to check.</param>
-        public static bool CheckAttributeFromScript(CSharpCompilation compilation, string path, Type attributeType)
+        public static bool CheckAttributeFromScript(Compilation compilation, string path, Type attributeType)
         {
             if (compilation == null) throw new ArgumentNullException(nameof(compilation));
             if (string.IsNullOrEmpty(path)) throw new ArgumentNullException(nameof(path));
@@ -61,7 +62,7 @@ namespace UGF.Code.Generate.Editor
         /// <param name="compilation">The project compilation.</param>
         /// <param name="path">The path of the source script.</param>
         /// <param name="attributeTypeSymbol">The type symbol of the attribute to check.</param>
-        public static bool CheckAttributeFromScript(CSharpCompilation compilation, string path, ITypeSymbol attributeTypeSymbol)
+        public static bool CheckAttributeFromScript(Compilation compilation, string path, ITypeSymbol attributeTypeSymbol)
         {
             if (compilation == null) throw new ArgumentNullException(nameof(compilation));
             if (string.IsNullOrEmpty(path)) throw new ArgumentNullException(nameof(path));
@@ -75,6 +76,40 @@ namespace UGF.Code.Generate.Editor
             walker.Visit(tree.GetRoot());
 
             return walker.Result;
+        }
+
+        /// <summary>
+        /// Gets path for generated source from the specified path with additional label.
+        /// </summary>
+        /// <param name="path">The path used to generated.</param>
+        /// <param name="label">The additional label.</param>
+        public static string GetPathForGeneratedScript(string path, string label = null)
+        {
+            if (string.IsNullOrEmpty(path)) throw new ArgumentNullException(nameof(path));
+
+            var builder = new StringBuilder();
+            string directory = Path.GetDirectoryName(path);
+            string name = Path.GetFileNameWithoutExtension(path);
+
+            if (!string.IsNullOrEmpty(directory))
+            {
+                directory = directory.Replace('\\', '/');
+
+                builder.Append(directory);
+                builder.Append('/');
+            }
+
+            builder.Append(name);
+
+            if (!string.IsNullOrEmpty(label))
+            {
+                builder.Append('.');
+                builder.Append(label);
+            }
+
+            builder.Append(".Generated.cs");
+
+            return builder.ToString();
         }
     }
 }

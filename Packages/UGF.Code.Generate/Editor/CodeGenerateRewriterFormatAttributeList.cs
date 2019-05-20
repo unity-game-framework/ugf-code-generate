@@ -10,13 +10,6 @@ namespace UGF.Code.Generate.Editor
     public class CodeGenerateRewriterFormatAttributeList : CSharpSyntaxRewriter
     {
         /// <summary>
-        /// Creates rewriter to format attribute list trivia.
-        /// </summary>
-        public CodeGenerateRewriterFormatAttributeList() : base(false)
-        {
-        }
-
-        /// <summary>
         /// Applies formatting to the specified syntax nod.
         /// </summary>
         /// <param name="node">The syntax node to format.</param>

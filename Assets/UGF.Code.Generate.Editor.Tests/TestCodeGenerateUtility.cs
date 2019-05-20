@@ -51,5 +51,15 @@ namespace UGF.Code.Generate.Editor.Tests
 
             Assert.True(result);
         }
+
+        [Test]
+        public void GetPathForGeneratedScript()
+        {
+            string path0 = CodeGenerateEditorUtility.GetPathForGeneratedScript("Assets/Code/Script.cs");
+            string path1 = CodeGenerateEditorUtility.GetPathForGeneratedScript("Assets/Code/Script.cs", "Label");
+
+            Assert.AreEqual("Assets/Code/Script.Generated.cs", path0);
+            Assert.AreEqual("Assets/Code/Script.Label.Generated.cs", path1);
+        }
     }
 }

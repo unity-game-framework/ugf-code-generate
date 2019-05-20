@@ -1,0 +1,10 @@
+namespace Test
+{
+    [global::NUnit.Framework.TestAttribute(typeof(global::Test.Targets.TestTarget))]public class Target1 : global::Test.GenericClass<global::Test.Targets.TestTarget>
+    {
+    }
+
+    [global::NUnit.Framework.TestAttribute(typeof(Test.Targets.TestTarget))]public class Target2 : GenericClass<Test.Targets.TestTarget>
+    {
+    }
+}
