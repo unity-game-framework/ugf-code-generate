@@ -1,0 +1,13 @@
+{
+    "m_typeName": "UnityEngine.Vector2, UnityEngine.CoreModule, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null",
+    "m_members": [
+        {
+            "m_name": "x",
+            "m_active": true
+        },
+        {
+            "m_name": "y",
+            "m_active": true
+        }
+    ]
+}

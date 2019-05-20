@@ -1,7 +1,8 @@
 {
     "name": "UGF.Code.Generate.Editor",
     "references": [
-        "GUID:3261026f398ac504fa7bfd69a915d0d0"
+        "GUID:3261026f398ac504fa7bfd69a915d0d0",
+        "GUID:eae7b1fac07195546ab082f2b00d807a"
     ],
     "optionalUnityReferences": [],
     "includePlatforms": [

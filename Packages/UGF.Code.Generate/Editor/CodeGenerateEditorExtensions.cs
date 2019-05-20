@@ -1,6 +1,5 @@
 using System;
 using System.Collections.Generic;
-using System.Linq;
 using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.CSharp;
 using Microsoft.CodeAnalysis.CSharp.Syntax;
@@ -11,7 +10,7 @@ namespace UGF.Code.Generate.Editor
     /// <summary>
     /// Provides extensions for code generate.
     /// </summary>
-    public static class CodeGenerateEditorExtensions
+    public static partial class CodeGenerateEditorExtensions
     {
         /// <summary>
         /// Generates auto property with the specified name, type, accessibility, modifiers and initializer.
@@ -53,64 +52,101 @@ namespace UGF.Code.Generate.Editor
         }
 
         /// <summary>
-        /// Tries to get type symbol by the specified type metadata name.
+        /// Tries to get any found type symbol from the specified type metadata name.
         /// <para>
-        /// This method also resolve generic types.
+        /// If specified compilation contains more than one matched types, will return first found.
         /// </para>
         /// </summary>
         /// <param name="compilation">The compilation to use.</param>
-        /// <param name="type">The type to find symbol.</param>
+        /// <param name="fullyQualifiedMetadataName">The name of the metadata.</param>
         /// <param name="typeSymbol">The found type symbol.</param>
-        public static bool TryGetTypeByMetadataName(this CSharpCompilation compilation, Type type, out INamedTypeSymbol typeSymbol)
+        public static bool TryGetAnyTypeByMetadataName(this Compilation compilation, string fullyQualifiedMetadataName, out INamedTypeSymbol typeSymbol)
         {
             if (compilation == null) throw new ArgumentNullException(nameof(compilation));
-            if (type == null) throw new ArgumentNullException(nameof(type));
+            if (fullyQualifiedMetadataName == null) throw new ArgumentNullException(nameof(fullyQualifiedMetadataName));
 
-            typeSymbol = compilation.GetTypeByMetadataName(type.FullName);
+            typeSymbol = compilation.GetTypeByMetadataName(fullyQualifiedMetadataName);
 
             if (typeSymbol == null)
             {
-                if (type.IsGenericType)
-                {
-                    Type genericDefinition = type.GetGenericTypeDefinition();
-                    Type[] genericArguments = type.GetGenericArguments();
+                typeSymbol = compilation.Assembly.GetTypeByMetadataName(fullyQualifiedMetadataName);
 
-                    return TryGetGenericTypeByMetadataName(compilation, genericDefinition.FullName, genericArguments.Select(x => x.FullName), out typeSymbol);
+                if (typeSymbol == null)
+                {
+                    foreach (MetadataReference reference in compilation.References)
+                    {
+                        if (compilation.GetAssemblyOrModuleSymbol(reference) is IAssemblySymbol assemblySymbol)
+                        {
+                            typeSymbol = assemblySymbol.GetTypeByMetadataName(fullyQualifiedMetadataName);
+
+                            if (typeSymbol != null)
+                            {
+                                break;
+                            }
+                        }
+                    }
                 }
 
-                return false;
+                return typeSymbol != null;
             }
 
             return true;
         }
 
         /// <summary>
-        /// Tries to get type symbol from the specified generic type definition and type arguments metadata.
+        /// Tries to construct type symbol from the specified type.
+        /// <para>
+        /// If the specified type is generic, will construct type symbol based on generic definition and arguments.
+        /// </para>
         /// </summary>
         /// <param name="compilation">The compilation to use.</param>
-        /// <param name="genericDefinition">The type metadata name of the generic definition.</param>
-        /// <param name="arguments">The types metadata names of the generic arguments.</param>
-        /// <param name="typeSymbol">The found type symbol.</param>
-        public static bool TryGetGenericTypeByMetadataName(this CSharpCompilation compilation, string genericDefinition, IEnumerable<string> arguments, out INamedTypeSymbol typeSymbol)
+        /// <param name="type">The type to construct.</param>
+        /// <param name="typeSymbol">The constructed type.</param>
+        public static bool TryConstructTypeSymbol(this Compilation compilation, Type type, out INamedTypeSymbol typeSymbol)
         {
             if (compilation == null) throw new ArgumentNullException(nameof(compilation));
-            if (genericDefinition == null) throw new ArgumentNullException(nameof(genericDefinition));
-            if (arguments == null) throw new ArgumentNullException(nameof(arguments));
+            if (type == null) throw new ArgumentNullException(nameof(type));
 
-            INamedTypeSymbol genericDefinitionTypeSymbol = compilation.GetTypeByMetadataName(genericDefinition);
-
-            if (genericDefinitionTypeSymbol != null)
+            if (!TryGetAnyTypeByMetadataName(compilation, type.FullName, out typeSymbol))
             {
-                var argumentTypeSymbols = new ITypeSymbol[arguments.Count()];
-                int index = 0;
-
-                foreach (string argument in arguments)
+                if (type.IsGenericType && !type.IsGenericTypeDefinition)
                 {
-                    INamedTypeSymbol argumentTypeSymbol = compilation.GetTypeByMetadataName(argument);
+                    Type definition = type.GetGenericTypeDefinition();
+                    Type[] arguments = type.GenericTypeArguments;
 
-                    if (argumentTypeSymbol != null)
+                    return TryConstructGenericTypeSymbol(compilation, definition, arguments, out typeSymbol);
+                }
+            }
+
+            return typeSymbol != null;
+        }
+
+        /// <summary>
+        /// Tries to construct type symbol from the generic definition and arguments.
+        /// </summary>
+        /// <param name="compilation">The compilation to use.</param>
+        /// <param name="definition">The definition of the generic type.</param>
+        /// <param name="arguments">The arguments of the generic to construct.</param>
+        /// <param name="typeSymbol">The constructed type symbol.</param>
+        public static bool TryConstructGenericTypeSymbol(this Compilation compilation, Type definition, IReadOnlyList<Type> arguments, out INamedTypeSymbol typeSymbol)
+        {
+            if (compilation == null) throw new ArgumentNullException(nameof(compilation));
+            if (definition == null) throw new ArgumentNullException(nameof(definition));
+            if (!definition.IsGenericTypeDefinition) throw new ArgumentException("The specified type is not a generic type definition.", nameof(definition));
+            if (arguments == null) throw new ArgumentNullException(nameof(arguments));
+            if (arguments.Count == 0) throw new ArgumentException("The specified arguments collection is empty.", nameof(arguments));
+
+            if (TryConstructTypeSymbol(compilation, definition, out INamedTypeSymbol definitionTypeSymbol))
+            {
+                var argumentTypeSymbols = new ITypeSymbol[arguments.Count];
+
+                for (int i = 0; i < arguments.Count; i++)
+                {
+                    Type argument = arguments[i];
+
+                    if (TryConstructTypeSymbol(compilation, argument, out INamedTypeSymbol argumentTypeSymbol))
                     {
-                        argumentTypeSymbols[index++] = argumentTypeSymbol;
+                        argumentTypeSymbols[i] = argumentTypeSymbol;
                     }
                     else
                     {
@@ -119,11 +155,36 @@ namespace UGF.Code.Generate.Editor
                     }
                 }
 
-                typeSymbol = genericDefinitionTypeSymbol.Construct(argumentTypeSymbols);
+                typeSymbol = definitionTypeSymbol.Construct(argumentTypeSymbols);
                 return true;
             }
 
             typeSymbol = null;
+            return false;
+        }
+
+        /// <summary>
+        /// Tries to get generic name syntax from the specified type syntax.
+        /// </summary>
+        /// <param name="typeSyntax">The type syntax to get from.</param>
+        /// <param name="genericNameSyntax">The found generic name syntax.</param>
+        public static bool TryGetGenericNameSyntax(this TypeSyntax typeSyntax, out GenericNameSyntax genericNameSyntax)
+        {
+            if (typeSyntax == null) throw new ArgumentNullException(nameof(typeSyntax));
+
+            if (typeSyntax is NameSyntax nameSyntax)
+            {
+                if (nameSyntax is QualifiedNameSyntax qualifiedNameSyntax)
+                {
+                    nameSyntax = qualifiedNameSyntax.Right;
+                }
+
+                genericNameSyntax = nameSyntax as GenericNameSyntax;
+
+                return genericNameSyntax != null;
+            }
+
+            genericNameSyntax = null;
             return false;
         }
     }

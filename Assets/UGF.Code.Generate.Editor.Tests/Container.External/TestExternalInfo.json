@@ -1,0 +1,17 @@
+{
+    "m_typeName": "UGF.Code.Generate.Editor.Tests.Container.External.TestTargetContainerExternal, UGF.Code.Generate.Editor.Tests, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null",
+    "m_members": [
+        {
+            "m_name": "Field",
+            "m_active": true
+        },
+        {
+            "m_name": "Field2",
+            "m_active": false
+        },
+        {
+            "m_name": "Property",
+            "m_active": true
+        }
+    ]
+}

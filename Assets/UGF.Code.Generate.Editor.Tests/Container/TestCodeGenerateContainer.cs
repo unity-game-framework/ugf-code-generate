@@ -19,7 +19,7 @@ namespace UGF.Code.Generate.Editor.Tests.Container
             CSharpCompilation compilation = CodeAnalysisEditorUtility.ProjectCompilation;
             SyntaxGenerator generator = CodeAnalysisEditorUtility.Generator;
 
-            compilation.TryGetTypeByMetadataName(typeof(List<int>), out INamedTypeSymbol typeSymbol);
+            compilation.TryConstructTypeSymbol(typeof(List<int>), out INamedTypeSymbol typeSymbol);
 
             var container = new CodeGenerateContainer("Container");
 

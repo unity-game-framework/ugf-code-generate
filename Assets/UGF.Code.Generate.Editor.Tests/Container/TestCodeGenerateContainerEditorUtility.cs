@@ -19,10 +19,11 @@ namespace UGF.Code.Generate.Editor.Tests.Container
         [Test]
         public void CreateUnit()
         {
+            CodeGenerateContainerValidation validation = CodeGenerateContainerEditorUtility.DefaultValidation;
             CSharpCompilation compilation = CodeAnalysisEditorUtility.ProjectCompilation;
             SyntaxGenerator generator = CodeAnalysisEditorUtility.Generator;
 
-            SyntaxNode unit = CodeGenerateContainerEditorUtility.CreateUnit(compilation, generator, typeof(Target));
+            SyntaxNode unit = CodeGenerateContainerEditorUtility.CreateUnit(typeof(Target), validation, compilation, generator);
 
             string result = unit.NormalizeWhitespace().ToFullString();
             string expected = File.ReadAllText(m_target3);
@@ -33,9 +34,10 @@ namespace UGF.Code.Generate.Editor.Tests.Container
         [Test]
         public void Create()
         {
+            CodeGenerateContainerValidation validation = CodeGenerateContainerEditorUtility.DefaultValidation;
             CSharpCompilation compilation = CodeAnalysisEditorUtility.ProjectCompilation;
             SyntaxGenerator generator = CodeAnalysisEditorUtility.Generator;
-            CodeGenerateContainer container = CodeGenerateContainerEditorUtility.Create(compilation, typeof(Target));
+            CodeGenerateContainer container = CodeGenerateContainerEditorUtility.Create(typeof(Target), validation, compilation);
 
             Assert.NotNull(container);
 
@@ -54,6 +56,7 @@ namespace UGF.Code.Generate.Editor.Tests.Container
             bool result3 = CodeGenerateContainerEditorUtility.IsValidType(typeof(Target));
             bool result4 = CodeGenerateContainerEditorUtility.IsValidType(typeof(TargetAbstractClass));
             bool result5 = CodeGenerateContainerEditorUtility.IsValidType(typeof(TargetGenericClass<>));
+            bool result6 = CodeGenerateContainerEditorUtility.IsValidType(typeof(TestDelegate));
 
             Assert.True(result0);
             Assert.True(result1);
@@ -61,6 +64,7 @@ namespace UGF.Code.Generate.Editor.Tests.Container
             Assert.True(result3);
             Assert.False(result4);
             Assert.False(result5);
+            Assert.False(result6);
         }
 
         [Test]
@@ -122,6 +126,24 @@ namespace UGF.Code.Generate.Editor.Tests.Container
             Assert.False(result5);
             Assert.False(result6);
         }
+
+        [Test]
+        public void GetFields()
+        {
+            FieldInfo[] fields = CodeGenerateContainerEditorUtility.GetFields(typeof(Target));
+
+            Assert.NotNull(fields);
+            Assert.AreEqual(2, fields.Length);
+        }
+
+        [Test]
+        public void GetProperties()
+        {
+            PropertyInfo[] properties = CodeGenerateContainerEditorUtility.GetProperties(typeof(Target));
+
+            Assert.NotNull(properties);
+            Assert.AreEqual(5, properties.Length);
+        }
     }
 
     public class Target
@@ -167,4 +189,6 @@ namespace UGF.Code.Generate.Editor.Tests.Container
     public class TargetGenericClass<T>
     {
     }
+
+    public delegate void TestDelegate();
 }
