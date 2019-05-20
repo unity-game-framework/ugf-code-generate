@@ -18,14 +18,16 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - `TryConstructTypeSymbol` to construct type symbol from the specified type. (Support generics) (#5)
 - `TryConstructGenericTypeSymbol` to construct type symbol from the specified generic definition and arguments.
 - `TryGetGenericNameSyntax` to get generic name syntax from the specified type syntax, if possible.
+- `CodeGenerateContainerExternalEditorUtility.CreateUnit` to create compilation unit from the specified container external info.
+- `ICodeGenerateContainerExternalInfo.TryGetMember<T>` to get member info with cast to the specified type.
+- `CodeGenerateEditorUtility.GetPathForGeneratedScript` to get path for scripts that contains generated code.
 
 ### Changed
 - Nothing.
 
 ### Deprecated
 - `CodeGenerateContainerEditorUtility.CreateUnit` and `CodeGenerateContainerEditorUtility.Create` has been deprecated, use overloads with validation instead.
-- `TryGetTypeByMetadataName` has been deprecated, use `TryGetAnyTypeByMetadataName` to get type symbol from the metadata name
-or `TryConstructTypeSymbol` to get type symbol from the `Type`.
+- `TryGetTypeByMetadataName` has been deprecated, use `TryGetAnyTypeByMetadataName` to get type symbol from the metadata name or `TryConstructTypeSymbol` to get type symbol from the `Type`.
 - `TryGetGenericTypeByMetadataName` has been deprecated, use `TryConstructGenericTypeSymbol` instead.
 
 ### Removed
