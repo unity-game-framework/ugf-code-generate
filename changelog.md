@@ -10,7 +10,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Added
 - Package dependencies:
-    - `com.ugf.assemblies`: `2.1.1`.
+    - `com.ugf.types`: `2.2.0`.
 - Container External to generate container from external type. (#3)
 - `CodeGenerateContainerValidation` to determine what types can be used to generate containers.
 - `CodeGenerateContainerEditorUtility.CreateUnit` and `CodeGenerateContainerEditorUtility.Create` overloads with validation.
