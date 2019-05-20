@@ -9,6 +9,28 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - [Milestone](https://github.com/unity-game-framework/ugf-code-generate/milestone/0?closed=1)
 
 ### Added
+- Nothing.
+
+### Changed
+- Nothing.
+
+### Deprecated
+- Nothing.
+
+### Removed
+- Nothing.
+
+### Fixed
+- Nothing.
+
+### Security
+- Nothing.
+
+## 1.1.0 - 2019-05-20
+- [Commits](https://github.com/unity-game-framework/ugf-code-generate/compare/1.0.0...1.1.0)
+- [Milestone](https://github.com/unity-game-framework/ugf-code-generate/milestone/2?closed=1)
+
+### Added
 - Package dependencies:
     - `com.ugf.types`: `2.2.0`.
 - Container External to generate container from external type. (#3)
@@ -22,22 +44,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - `ICodeGenerateContainerExternalInfo.TryGetMember<T>` to get member info with cast to the specified type.
 - `CodeGenerateEditorUtility.GetPathForGeneratedScript` to get path for scripts that contains generated code.
 
-### Changed
-- Nothing.
-
 ### Deprecated
 - `CodeGenerateContainerEditorUtility.CreateUnit` and `CodeGenerateContainerEditorUtility.Create` has been deprecated, use overloads with validation instead.
 - `TryGetTypeByMetadataName` has been deprecated, use `TryGetAnyTypeByMetadataName` to get type symbol from the metadata name or `TryConstructTypeSymbol` to get type symbol from the `Type`.
 - `TryGetGenericTypeByMetadataName` has been deprecated, use `TryConstructGenericTypeSymbol` instead.
-
-### Removed
-- Nothing.
-
-### Fixed
-- Nothing.
-
-### Security
-- Nothing.
 
 ## 1.0.0 - 2019-04-29
 - [Commits](https://github.com/unity-game-framework/ugf-code-generate/compare/34b7eb2...1.0.0)
