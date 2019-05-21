@@ -4,14 +4,14 @@ UGF.Code.Generate
 
 ## Info
 
-- **Version**: `1.1.0`
+- **Version**: `2.0.0`
 - **Unity Version**: `2019.1.0`
 - **Scripting Runtime Version**: `.NET 4.x Equivalent`
 - **Api Compatibility Level**: `.NET Standard 2.0`
 
 ### Dependencies
 
-- [UGF.Code.Analysis](https://github.com/unity-game-framework/ugf-code-analysis): `1.0.0`
+- [UGF.Code.Analysis](https://github.com/unity-game-framework/ugf-code-analysis): `2.0.0`
 - [UGF.Types](https://github.com/unity-game-framework/ugf-types): `2.2.0`
 
 ### Changelog
