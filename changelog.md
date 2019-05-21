@@ -12,7 +12,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Nothing.
 
 ### Changed
-- Nothing.
+- Package dependencies:
+    - `com.ugf.code.analysis`: from `1.0.0` to `2.0.0`.
 
 ### Deprecated
 - Nothing.
