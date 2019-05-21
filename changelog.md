@@ -12,8 +12,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Nothing.
 
 ### Changed
-- Package dependencies:
-    - `com.ugf.code.analysis`: from `1.0.0` to `2.0.0`.
+- Nothing.
 
 ### Deprecated
 - Nothing.
@@ -26,6 +25,14 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Security
 - Nothing.
+
+## 2.0.0 - 2019-05-21
+- [Commits](https://github.com/unity-game-framework/ugf-code-generate/compare/1.1.0...2.0.0)
+- [Milestone](https://github.com/unity-game-framework/ugf-code-generate/milestone/3?closed=1)
+
+### Changed
+- Package dependencies:
+    - `com.ugf.code.analysis`: from `1.0.0` to `2.0.0`.
 
 ## 1.1.0 - 2019-05-20
 - [Commits](https://github.com/unity-game-framework/ugf-code-generate/compare/1.0.0...1.1.0)
