@@ -94,6 +94,24 @@ namespace UGF.Code.Generate.Editor
         }
 
         /// <summary>
+        /// Constructs type symbol from the specified type.
+        /// <para>
+        /// This method will throw exception whether type symbol not found for the specified type.
+        /// </para>
+        /// </summary>
+        /// <param name="compilation">The compilation to use.</param>
+        /// <param name="type">The type to construct.</param>
+        public static INamedTypeSymbol ConstructTypeSymbol(this Compilation compilation, Type type)
+        {
+            if (!TryConstructTypeSymbol(compilation, type, out INamedTypeSymbol typeSymbol))
+            {
+                throw new ArgumentException($"The type symbol for the specified type not found: '{type}'.");
+            }
+
+            return typeSymbol;
+        }
+
+        /// <summary>
         /// Tries to construct type symbol from the specified type.
         /// <para>
         /// If the specified type is generic, will construct type symbol based on generic definition and arguments.
