@@ -26,6 +26,13 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Security
 - Nothing.
 
+## 2.1.0 - 2019-01-01
+- [Commits](https://github.com/unity-game-framework/ugf-code-generate/compare/2.0.0...2.1.0)
+- [Milestone](https://github.com/unity-game-framework/ugf-code-generate/milestone/4?closed=1)
+
+### Added
+- `ConstructTypeSymbol` method that throws exception if the symbol can not be constructed. (#10)
+
 ## 2.0.0 - 2019-05-21
 - [Commits](https://github.com/unity-game-framework/ugf-code-generate/compare/1.1.0...2.0.0)
 - [Milestone](https://github.com/unity-game-framework/ugf-code-generate/milestone/3?closed=1)
