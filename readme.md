@@ -4,7 +4,7 @@ UGF.Code.Generate
 
 ## Info
 
-- **Version**: `2.0.0`
+- **Version**: `2.1.0`
 - **Unity Version**: `2019.1.0`
 - **Scripting Runtime Version**: `.NET 4.x Equivalent`
 - **Api Compatibility Level**: `.NET Standard 2.0`
