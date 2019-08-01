@@ -1,9 +1,9 @@
 {
     "name": "com.ugf.code.generate",
     "displayName": "UGF.Code.Generate",
-    "version": "2.1.0",
-    "unity": "2019.1",
-    "description": "No description.",
+    "version": "3.0.0",
+    "unity": "2019.2",
+    "description": "Provides utilities to work with code generating.",
     "author": {
         "name": "Unity Game Framework",
         "url": "https://github.com/unity-game-framework"
