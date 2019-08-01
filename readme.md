@@ -4,14 +4,13 @@ UGF.Code.Generate
 
 ## Info
 
-- **Version**: `2.1.0`
-- **Unity Version**: `2019.1.0`
-- **Scripting Runtime Version**: `.NET 4.x Equivalent`
+- **Version**: `3.0.0`
+- **Unity Version**: `2019.2.0`
 - **Api Compatibility Level**: `.NET Standard 2.0`
 
 ### Dependencies
 
-- [UGF.Code.Analysis](https://github.com/unity-game-framework/ugf-code-analysis): `2.0.0`
+- [UGF.Code.Analysis](https://github.com/unity-game-framework/ugf-code-analysis): `3.0.0`
 - [UGF.Types](https://github.com/unity-game-framework/ugf-types): `2.2.0`
 
 ### Changelog
@@ -25,7 +24,7 @@ UGF.Code.Generate
 
 ## Description
 
-No description.
+Provides utilities to work with code generating.
 
 ## How to Install
 
