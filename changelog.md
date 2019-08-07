@@ -26,6 +26,13 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Security
 - Nothing.
 
+## 3.0.1 - 2019-08-07
+- [Commits](https://github.com/unity-game-framework/ugf-code-generate/compare/3.0.0...3.0.1)
+- [Milestone](https://github.com/unity-game-framework/ugf-code-generate/milestone/6?closed=1)
+
+### Fixed
+- `CodeGenerateContainerExternalAssetImporterEditor` incorrectly applies changes.
+
 ## 3.0.0 - 2019-08-01
 - [Commits](https://github.com/unity-game-framework/ugf-code-generate/compare/2.1.0...3.0.0)
 - [Milestone](https://github.com/unity-game-framework/ugf-code-generate/milestone/5?closed=1)

@@ -18,7 +18,7 @@ namespace UGF.Code.Generate.Editor.Container.External
         /// <summary>
         /// Gets the target importer of the editor.
         /// </summary>
-        protected CodeGenerateContainerExternalAssetImporterBase Importer { get; private set; }
+        protected CodeGenerateContainerExternalAssetImporterBase Importer { get { return (CodeGenerateContainerExternalAssetImporterBase)serializedObject.targetObject; } }
 
         /// <summary>
         /// Gets the container external type information as serialized property.
@@ -52,7 +52,6 @@ namespace UGF.Code.Generate.Editor.Container.External
         {
             base.OnEnable();
 
-            Importer = (CodeGenerateContainerExternalAssetImporterBase)target;
             InfoSerializedProperty = serializedObject.FindProperty("m_info");
 
             m_propertyScript = serializedObject.FindProperty("m_Script");
@@ -69,6 +68,8 @@ namespace UGF.Code.Generate.Editor.Container.External
                 m_styles = new Styles();
             }
 
+            serializedObject.UpdateIfRequiredOrScript();
+
             using (new EditorGUI.DisabledScope(true))
             {
                 EditorGUILayout.PropertyField(m_propertyScript);
@@ -77,6 +78,8 @@ namespace UGF.Code.Generate.Editor.Container.External
             OnDrawTypeSelection(m_propertyTypeName);
             OnDrawTypeInfo(m_propertyTypeName);
             OnDrawMembers(m_propertyMembers);
+
+            serializedObject.ApplyModifiedProperties();
 
             ApplyRevertGUI();
         }
@@ -278,6 +281,8 @@ namespace UGF.Code.Generate.Editor.Container.External
             OnTypeChanged(type);
 
             ValidateType(m_propertyTypeName.stringValue);
+
+            serializedObject.ApplyModifiedProperties();
         }
 
         private void ValidateType(string typeName)
