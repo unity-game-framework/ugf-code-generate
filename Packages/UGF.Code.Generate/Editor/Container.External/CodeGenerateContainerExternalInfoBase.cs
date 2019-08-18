@@ -52,9 +52,15 @@ namespace UGF.Code.Generate.Editor.Container.External
 
         public bool TryGetTargetType(out Type type)
         {
-            type = Type.GetType(m_typeName);
+            if (!string.IsNullOrEmpty(m_typeName))
+            {
+                type = Type.GetType(m_typeName);
 
-            return type != null;
+                return type != null;
+            }
+
+            type = null;
+            return false;
         }
 
         bool ICodeGenerateContainerExternalInfo.TryGetMember(string name, out CodeGenerateContainerExternalMemberInfo member)
