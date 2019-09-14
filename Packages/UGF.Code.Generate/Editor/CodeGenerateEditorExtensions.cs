@@ -205,6 +205,13 @@ namespace UGF.Code.Generate.Editor
             return false;
         }
 
+        /// <summary>
+        /// Tries to construct type symbol from the array element type and rank.
+        /// </summary>
+        /// <param name="compilation">The compilation to use.</param>
+        /// <param name="elementType">The type of the array element.</param>
+        /// <param name="rank">The rank of the array.</param>
+        /// <param name="typeSymbol">The constructed type symbol.</param>
         public static bool TryConstructArrayTypeSymbol(this Compilation compilation, Type elementType, int rank, out IArrayTypeSymbol typeSymbol)
         {
             if (compilation == null) throw new ArgumentNullException(nameof(compilation));
