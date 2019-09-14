@@ -101,9 +101,9 @@ namespace UGF.Code.Generate.Editor
         /// </summary>
         /// <param name="compilation">The compilation to use.</param>
         /// <param name="type">The type to construct.</param>
-        public static INamedTypeSymbol ConstructTypeSymbol(this Compilation compilation, Type type)
+        public static ITypeSymbol ConstructTypeSymbol(this Compilation compilation, Type type)
         {
-            if (!TryConstructTypeSymbol(compilation, type, out INamedTypeSymbol typeSymbol))
+            if (!TryConstructTypeSymbol(compilation, type, out ITypeSymbol typeSymbol))
             {
                 throw new ArgumentException($"The type symbol for the specified type not found: '{type}'.");
             }
@@ -115,27 +115,51 @@ namespace UGF.Code.Generate.Editor
         /// Tries to construct type symbol from the specified type.
         /// <para>
         /// If the specified type is generic, will construct type symbol based on generic definition and arguments.
+        /// If the specified type is array, will construct type symbol base on array element type and rank.
         /// </para>
         /// </summary>
         /// <param name="compilation">The compilation to use.</param>
         /// <param name="type">The type to construct.</param>
-        /// <param name="typeSymbol">The constructed type.</param>
-        public static bool TryConstructTypeSymbol(this Compilation compilation, Type type, out INamedTypeSymbol typeSymbol)
+        /// <param name="typeSymbol">The constructed type symbol.</param>
+        public static bool TryConstructTypeSymbol(this Compilation compilation, Type type, out ITypeSymbol typeSymbol)
         {
             if (compilation == null) throw new ArgumentNullException(nameof(compilation));
             if (type == null) throw new ArgumentNullException(nameof(type));
 
-            if (!TryGetAnyTypeByMetadataName(compilation, type.FullName, out typeSymbol))
+            if (!TryGetAnyTypeByMetadataName(compilation, type.FullName, out INamedTypeSymbol namedTypeSymbol))
             {
                 if (type.IsGenericType && !type.IsGenericTypeDefinition)
                 {
                     Type definition = type.GetGenericTypeDefinition();
                     Type[] arguments = type.GenericTypeArguments;
 
-                    return TryConstructGenericTypeSymbol(compilation, definition, arguments, out typeSymbol);
+                    if (TryConstructGenericTypeSymbol(compilation, definition, arguments, out namedTypeSymbol))
+                    {
+                        typeSymbol = namedTypeSymbol;
+                        return true;
+                    }
+
+                    typeSymbol = null;
+                    return false;
+                }
+
+                if (type.IsArray)
+                {
+                    Type element = type.GetElementType();
+                    int rank = type.GetArrayRank();
+
+                    if (TryConstructArrayTypeSymbol(compilation, element, rank, out IArrayTypeSymbol arrayTypeSymbol))
+                    {
+                        typeSymbol = arrayTypeSymbol;
+                        return true;
+                    }
+
+                    typeSymbol = null;
+                    return false;
                 }
             }
 
+            typeSymbol = namedTypeSymbol;
             return typeSymbol != null;
         }
 
@@ -154,7 +178,7 @@ namespace UGF.Code.Generate.Editor
             if (arguments == null) throw new ArgumentNullException(nameof(arguments));
             if (arguments.Count == 0) throw new ArgumentException("The specified arguments collection is empty.", nameof(arguments));
 
-            if (TryConstructTypeSymbol(compilation, definition, out INamedTypeSymbol definitionTypeSymbol))
+            if (TryConstructTypeSymbol(compilation, definition, out ITypeSymbol definitionTypeSymbol) && definitionTypeSymbol is INamedTypeSymbol definitionNamedTypeSymbol)
             {
                 var argumentTypeSymbols = new ITypeSymbol[arguments.Count];
 
@@ -162,7 +186,7 @@ namespace UGF.Code.Generate.Editor
                 {
                     Type argument = arguments[i];
 
-                    if (TryConstructTypeSymbol(compilation, argument, out INamedTypeSymbol argumentTypeSymbol))
+                    if (TryConstructTypeSymbol(compilation, argument, out ITypeSymbol argumentTypeSymbol))
                     {
                         argumentTypeSymbols[i] = argumentTypeSymbol;
                     }
@@ -173,7 +197,23 @@ namespace UGF.Code.Generate.Editor
                     }
                 }
 
-                typeSymbol = definitionTypeSymbol.Construct(argumentTypeSymbols);
+                typeSymbol = definitionNamedTypeSymbol.Construct(argumentTypeSymbols);
+                return true;
+            }
+
+            typeSymbol = null;
+            return false;
+        }
+
+        public static bool TryConstructArrayTypeSymbol(this Compilation compilation, Type elementType, int rank, out IArrayTypeSymbol typeSymbol)
+        {
+            if (compilation == null) throw new ArgumentNullException(nameof(compilation));
+            if (elementType == null) throw new ArgumentNullException(nameof(elementType));
+            if (rank < 1) throw new ArgumentException("The rank must be greater than zero.", nameof(rank));
+
+            if (TryConstructTypeSymbol(compilation, elementType, out ITypeSymbol elementTypeSymbol))
+            {
+                typeSymbol = compilation.CreateArrayTypeSymbol(elementTypeSymbol, rank);
                 return true;
             }
 

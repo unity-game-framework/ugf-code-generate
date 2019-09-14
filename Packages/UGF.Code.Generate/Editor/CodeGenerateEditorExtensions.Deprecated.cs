@@ -83,5 +83,34 @@ namespace UGF.Code.Generate.Editor
             typeSymbol = null;
             return false;
         }
+
+        /// <summary>
+        /// Tries to construct type symbol from the specified type.
+        /// <para>
+        /// If the specified type is generic, will construct type symbol based on generic definition and arguments.
+        /// </para>
+        /// </summary>
+        /// <param name="compilation">The compilation to use.</param>
+        /// <param name="type">The type to construct.</param>
+        /// <param name="typeSymbol">The constructed type.</param>
+        [Obsolete("TryConstructTypeSymbol has been deprecated. Use another overload that supports arrays and returns `ITypeSymbol`.")]
+        public static bool TryConstructTypeSymbol(this Compilation compilation, Type type, out INamedTypeSymbol typeSymbol)
+        {
+            if (compilation == null) throw new ArgumentNullException(nameof(compilation));
+            if (type == null) throw new ArgumentNullException(nameof(type));
+
+            if (!TryGetAnyTypeByMetadataName(compilation, type.FullName, out typeSymbol))
+            {
+                if (type.IsGenericType && !type.IsGenericTypeDefinition)
+                {
+                    Type definition = type.GetGenericTypeDefinition();
+                    Type[] arguments = type.GenericTypeArguments;
+
+                    return TryConstructGenericTypeSymbol(compilation, definition, arguments, out typeSymbol);
+                }
+            }
+
+            return typeSymbol != null;
+        }
     }
 }
