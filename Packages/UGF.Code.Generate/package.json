@@ -1,7 +1,7 @@
 {
     "name": "com.ugf.code.generate",
     "displayName": "UGF.Code.Generate",
-    "version": "3.0.3",
+    "version": "3.1.0",
     "unity": "2019.2",
     "description": "Provides utilities to work with code generating.",
     "author": {

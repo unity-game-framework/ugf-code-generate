@@ -26,6 +26,17 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Security
 - Nothing.
 
+## 3.1.0 - 2019-09-14
+- [Commits](https://github.com/unity-game-framework/ugf-code-generate/compare/3.0.3...3.1.0)
+- [Milestone](https://github.com/unity-game-framework/ugf-code-generate/milestone/9?closed=1)
+
+### Added
+- `TryConstructTypeSymbol` support for constructing type symbol from array type.
+- `TryConstructArrayTypeSymbol` to construct type symbol from the array element type and rank.
+
+### Deprecated
+- `TryConstructTypeSymbol` overload with `INamedTypeSymbol` as result.
+
 ## 3.0.3 - 2019-09-14
 - [Commits](https://github.com/unity-game-framework/ugf-code-generate/compare/3.0.2...3.0.3)
 - [Milestone](https://github.com/unity-game-framework/ugf-code-generate/milestone/8?closed=1)
