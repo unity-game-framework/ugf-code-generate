@@ -1,4 +1,5 @@
 using System.IO;
+using UnityEditor;
 using UnityEditor.Experimental.AssetImporters;
 using UnityEngine;
 
@@ -21,7 +22,7 @@ namespace UGF.Code.Generate.Editor.Container.External
             string source = File.ReadAllText(context.assetPath);
             var asset = new TextAsset(source);
 
-            JsonUtility.FromJsonOverwrite(source, m_info);
+            EditorJsonUtility.FromJsonOverwrite(source, m_info);
 
             context.AddObjectToAsset("main", asset);
             context.SetMainObject(asset);
@@ -32,7 +33,7 @@ namespace UGF.Code.Generate.Editor.Container.External
         /// </summary>
         public override void Save()
         {
-            string source = JsonUtility.ToJson(m_info, true).Replace("\n", "\r\n");
+            string source = EditorJsonUtility.ToJson(m_info, true);
 
             File.WriteAllText(assetPath, source);
 
