@@ -57,10 +57,13 @@ namespace UGF.Code.Generate.Editor.Tests
         [Test]
         public void TryConstructTypeSymbol()
         {
-            bool result0 = m_compilation.TryConstructTypeSymbol(typeof(int), out INamedTypeSymbol typeSymbol0);
-            bool result1 = m_compilation.TryConstructTypeSymbol(typeof(Vector2), out INamedTypeSymbol typeSymbol1);
-            bool result2 = m_compilation.TryConstructTypeSymbol(typeof(List<>), out INamedTypeSymbol typeSymbol2);
-            bool result3 = m_compilation.TryConstructTypeSymbol(typeof(List<int>), out INamedTypeSymbol typeSymbol3);
+            bool result0 = m_compilation.TryConstructTypeSymbol(typeof(int), out ITypeSymbol typeSymbol0);
+            bool result1 = m_compilation.TryConstructTypeSymbol(typeof(Vector2), out ITypeSymbol typeSymbol1);
+            bool result2 = m_compilation.TryConstructTypeSymbol(typeof(List<>), out ITypeSymbol typeSymbol2);
+            bool result3 = m_compilation.TryConstructTypeSymbol(typeof(List<int>), out ITypeSymbol typeSymbol3);
+            bool result4 = m_compilation.TryConstructTypeSymbol(typeof(int[]), out ITypeSymbol typeSymbol4);
+            bool result5 = m_compilation.TryConstructTypeSymbol(typeof(int[,]), out ITypeSymbol typeSymbol5);
+            bool result6 = m_compilation.TryConstructTypeSymbol(typeof(Vector2[]), out ITypeSymbol typeSymbol6);
 
             Assert.True(result0);
             Assert.NotNull(typeSymbol0);
@@ -70,6 +73,12 @@ namespace UGF.Code.Generate.Editor.Tests
             Assert.NotNull(typeSymbol2);
             Assert.True(result3);
             Assert.NotNull(typeSymbol3);
+            Assert.True(result4);
+            Assert.NotNull(typeSymbol4);
+            Assert.True(result5);
+            Assert.NotNull(typeSymbol5);
+            Assert.True(result6);
+            Assert.NotNull(typeSymbol6);
 
             string name00 = typeSymbol0.ToDisplayString();
             string name01 = m_generator.TypeExpression(typeSymbol0).ToFullString();
@@ -79,6 +88,12 @@ namespace UGF.Code.Generate.Editor.Tests
             string name21 = m_generator.TypeExpression(typeSymbol2).ToFullString();
             string name30 = typeSymbol3.ToDisplayString();
             string name31 = m_generator.TypeExpression(typeSymbol3).ToFullString();
+            string name40 = typeSymbol4.ToDisplayString();
+            string name41 = m_generator.TypeExpression(typeSymbol4).ToFullString();
+            string name50 = typeSymbol5.ToDisplayString();
+            string name51 = m_generator.TypeExpression(typeSymbol5).ToFullString();
+            string name60 = typeSymbol6.ToDisplayString();
+            string name61 = m_generator.TypeExpression(typeSymbol6).ToFullString();
 
             Assert.AreEqual("int", name00);
             Assert.AreEqual("global::System.Int32", name01);
@@ -88,6 +103,12 @@ namespace UGF.Code.Generate.Editor.Tests
             Assert.AreEqual("global::System.Collections.Generic.List<T>", name21);
             Assert.AreEqual("System.Collections.Generic.List<int>", name30);
             Assert.AreEqual("global::System.Collections.Generic.List<global::System.Int32>", name31);
+            Assert.AreEqual("int[]", name40);
+            Assert.AreEqual("global::System.Int32[]", name41);
+            Assert.AreEqual("int[*,*]", name50);
+            Assert.AreEqual("global::System.Int32[,]", name51);
+            Assert.AreEqual("UnityEngine.Vector2[]", name60);
+            Assert.AreEqual("global::UnityEngine.Vector2[]", name61);
         }
 
         [Test]
