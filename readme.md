@@ -10,7 +10,7 @@ UGF.Code.Generate
 
 ### Dependencies
 
-- [UGF.Code.Analysis](https://github.com/unity-game-framework/ugf-code-analysis): `3.0.0`
+- [UGF.Code.Analysis](https://github.com/unity-game-framework/ugf-code-analysis): `3.1.0`
 - [UGF.Types](https://github.com/unity-game-framework/ugf-types): `2.2.0`
 
 ### Changelog
