@@ -41,8 +41,8 @@ namespace UGF.Code.Generate.Editor.Container
         /// <param name="asAutoProperty">The value determines whether this field will be generated as auto property.</param>
         public CodeGenerateContainerField(string name, string type, SyntaxNode initializer = null, bool asAutoProperty = false)
         {
-            if (string.IsNullOrEmpty(name)) throw new ArgumentNullException(nameof(name));
-            if (string.IsNullOrEmpty(type)) throw new ArgumentNullException(nameof(type));
+            if (string.IsNullOrEmpty(name)) throw new ArgumentException("Value cannot be null or empty.", nameof(name));
+            if (string.IsNullOrEmpty(type)) throw new ArgumentException("Value cannot be null or empty.", nameof(type));
 
             Name = name;
             Type = type;

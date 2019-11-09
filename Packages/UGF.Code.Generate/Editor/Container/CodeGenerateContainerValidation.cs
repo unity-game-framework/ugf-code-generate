@@ -86,6 +86,8 @@ namespace UGF.Code.Generate.Editor.Container
         /// <param name="type">The type to check.</param>
         protected virtual bool IsTypeContainer(Type type)
         {
+            if (type == null) throw new ArgumentNullException(nameof(type));
+
             return CodeGenerateContainerEditorUtility.IsValidType(type);
         }
 
@@ -95,6 +97,8 @@ namespace UGF.Code.Generate.Editor.Container
         /// <param name="type">The type to check.</param>
         protected virtual bool IsTypeHasDefaultConstructor(Type type)
         {
+            if (type == null) throw new ArgumentNullException(nameof(type));
+
             return type.IsValueType || type.GetConstructor(Type.EmptyTypes) != null;
         }
 
@@ -104,6 +108,8 @@ namespace UGF.Code.Generate.Editor.Container
         /// <param name="type">The type to check.</param>
         protected virtual bool IsTypeHasAnyValidFields(Type type)
         {
+            if (type == null) throw new ArgumentNullException(nameof(type));
+
             foreach (FieldInfo field in GetFields(type))
             {
                 if (Validate(field))
@@ -121,6 +127,8 @@ namespace UGF.Code.Generate.Editor.Container
         /// <param name="type">The type to check.</param>
         protected virtual bool IsTypeHasAnyValidProperties(Type type)
         {
+            if (type == null) throw new ArgumentNullException(nameof(type));
+
             foreach (PropertyInfo property in GetProperties(type))
             {
                 if (Validate(property))

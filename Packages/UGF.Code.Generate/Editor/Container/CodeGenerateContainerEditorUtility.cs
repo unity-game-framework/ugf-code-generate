@@ -123,7 +123,7 @@ namespace UGF.Code.Generate.Editor.Container
         public static bool TryCreateField(Compilation compilation, string name, Type returnType, bool asAutoProperty, out CodeGenerateContainerField field)
         {
             if (compilation == null) throw new ArgumentNullException(nameof(compilation));
-            if (name == null) throw new ArgumentNullException(nameof(name));
+            if (string.IsNullOrEmpty(name)) throw new ArgumentException("Value cannot be null or empty.", nameof(name));
             if (returnType == null) throw new ArgumentNullException(nameof(returnType));
 
             if (compilation.TryConstructTypeSymbol(returnType, out ITypeSymbol typeSymbol))
@@ -207,6 +207,8 @@ namespace UGF.Code.Generate.Editor.Container
         /// <param name="type">The type to get fields from.</param>
         public static FieldInfo[] GetFields(Type type)
         {
+            if (type == null) throw new ArgumentNullException(nameof(type));
+
             return type.GetFields(BindingFlags.Instance | BindingFlags.Public);
         }
 
@@ -216,6 +218,8 @@ namespace UGF.Code.Generate.Editor.Container
         /// <param name="type">The type to get properties from.</param>
         public static PropertyInfo[] GetProperties(Type type)
         {
+            if (type == null) throw new ArgumentNullException(nameof(type));
+
             return type.GetProperties(BindingFlags.Instance | BindingFlags.Public);
         }
     }
