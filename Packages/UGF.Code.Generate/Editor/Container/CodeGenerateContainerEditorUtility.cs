@@ -1,5 +1,4 @@
 using System;
-using System.Collections.Generic;
 using System.Reflection;
 using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.Editing;
@@ -81,10 +80,7 @@ namespace UGF.Code.Generate.Editor.Container
 
             var container = new CodeGenerateContainer(type.Name, type.IsValueType);
 
-            IEnumerable<FieldInfo> fields = validation.GetFields(type);
-            IEnumerable<PropertyInfo> properties = validation.GetProperties(type);
-
-            foreach (FieldInfo field in fields)
+            foreach (FieldInfo field in validation.GetFields(type))
             {
                 if (validation.Validate(field))
                 {
@@ -95,7 +91,7 @@ namespace UGF.Code.Generate.Editor.Container
                 }
             }
 
-            foreach (PropertyInfo property in properties)
+            foreach (PropertyInfo property in validation.GetProperties(type))
             {
                 if (validation.Validate(property))
                 {
@@ -158,69 +154,6 @@ namespace UGF.Code.Generate.Editor.Container
             bool isOther = type.IsAbstract || type.IsAbstract && type.IsSealed;
 
             return isObject && isPublic && !isGeneric && !isOther;
-        }
-
-        /// <summary>
-        /// Determines whether the specified field is valid to generate field container.
-        /// <para>
-        /// The field can be valid for generating field container only if:
-        /// <para>- Field is public.</para>
-        /// <para>- Field is not static.</para>
-        /// <para>- Field is not readonly or const.</para>
-        /// </para>
-        /// </summary>
-        /// <param name="field">The field to validate.</param>
-        public static bool IsValidField(FieldInfo field)
-        {
-            if (field == null) throw new ArgumentNullException(nameof(field));
-
-            return field.IsPublic && !field.IsStatic && !field.IsLiteral && !field.IsInitOnly;
-        }
-
-        /// <summary>
-        /// Determines whether the specified property is valid to generate field container.
-        /// <para>
-        /// The property can be valid for generating field container only if:
-        /// <para>- Property is public.</para>
-        /// <para>- Property is not static.</para>
-        /// <para>- Property is not abstract.</para>
-        /// <para>- Property is can read and write.</para>
-        /// </para>
-        /// </summary>
-        /// <param name="property">The property to validate.</param>
-        public static bool IsValidProperty(PropertyInfo property)
-        {
-            if (property == null) throw new ArgumentNullException(nameof(property));
-
-            MethodInfo get = property.GetMethod;
-            MethodInfo set = property.SetMethod;
-
-            bool isGetValid = get != null && get.IsPublic && !get.IsStatic && !get.IsAbstract;
-            bool isSetValid = set != null && set.IsPublic && !set.IsStatic && !set.IsAbstract;
-
-            return property.GetIndexParameters().Length == 0 && isGetValid && isSetValid;
-        }
-
-        /// <summary>
-        /// Gets public non static fields from the specified type.
-        /// </summary>
-        /// <param name="type">The type to get fields from.</param>
-        public static FieldInfo[] GetFields(Type type)
-        {
-            if (type == null) throw new ArgumentNullException(nameof(type));
-
-            return type.GetFields(BindingFlags.Instance | BindingFlags.Public);
-        }
-
-        /// <summary>
-        /// Gets public non static properties from the specified type.
-        /// </summary>
-        /// <param name="type">The type to get properties from.</param>
-        public static PropertyInfo[] GetProperties(Type type)
-        {
-            if (type == null) throw new ArgumentNullException(nameof(type));
-
-            return type.GetProperties(BindingFlags.Instance | BindingFlags.Public);
         }
     }
 }
