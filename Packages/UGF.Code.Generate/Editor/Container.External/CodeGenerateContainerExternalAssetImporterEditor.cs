@@ -1,6 +1,6 @@
 using System;
-using UGF.Types.Editor;
-using UGF.Types.Editor.IMGUI;
+using System.Collections.Generic;
+using UGF.EditorTools.Editor.IMGUI;
 using UnityEditor;
 using UnityEditor.Experimental.AssetImporters;
 using UnityEngine;
@@ -38,13 +38,12 @@ namespace UGF.Code.Generate.Editor.Container.External
         private SerializedProperty m_propertyScript;
         private SerializedProperty m_propertyTypeName;
         private SerializedProperty m_propertyMembers;
-        private TypesDropdown m_dropdown;
+        private TypesDropdownDrawer m_dropdown;
         private Styles m_styles;
 
         private sealed class Styles
         {
             public readonly GUIContent TypeLabelContent = new GUIContent("Type");
-            public readonly GUIContent TypeDropdownNone = new GUIContent("None");
             public readonly GUIStyle Box = new GUIStyle("Box");
         }
 
@@ -59,6 +58,9 @@ namespace UGF.Code.Generate.Editor.Container.External
             m_propertyMembers = InfoSerializedProperty.FindPropertyRelative("m_members");
 
             ValidateType(m_propertyTypeName.stringValue);
+
+            m_dropdown = new TypesDropdownDrawer(m_propertyTypeName, OnDropdownTypeCollector);
+            m_dropdown.Selected += OnDropdownTypeSelected;
         }
 
         public override void OnInspectorGUI()
@@ -90,16 +92,7 @@ namespace UGF.Code.Generate.Editor.Container.External
         /// <param name="propertyTypeName">The serialized property of the type name field.</param>
         protected virtual void OnDrawTypeSelection(SerializedProperty propertyTypeName)
         {
-            Rect rect = EditorGUILayout.GetControlRect();
-            Rect rectButton = EditorGUI.PrefixLabel(rect, m_styles.TypeLabelContent);
-
-            Type type = Type.GetType(propertyTypeName.stringValue);
-            GUIContent typeButtonContent = type != null ? new GUIContent(type.Name) : m_styles.TypeDropdownNone;
-
-            if (EditorGUI.DropdownButton(rectButton, typeButtonContent, FocusType.Keyboard))
-            {
-                ShowDropdown(rectButton);
-            }
+            m_dropdown.DrawGUILayout(m_styles.TypeLabelContent);
         }
 
         /// <summary>
@@ -258,20 +251,15 @@ namespace UGF.Code.Generate.Editor.Container.External
             Importer.Save();
         }
 
-        private void ShowDropdown(Rect rect)
+        private IEnumerable<Type> OnDropdownTypeCollector()
         {
-            if (m_dropdown == null)
+            foreach (Type type in TypeCache.GetTypesDerivedFrom<object>())
             {
-                m_dropdown = TypesEditorGUIUtility.GetTypesDropdown(OnDropdownValidateType);
-                m_dropdown.Selected += OnDropdownTypeSelected;
+                if (Validation.Validate(type))
+                {
+                    yield return type;
+                }
             }
-
-            m_dropdown.Show(rect);
-        }
-
-        private bool OnDropdownValidateType(Type type)
-        {
-            return Validation.Validate(type);
         }
 
         private void OnDropdownTypeSelected(Type type)

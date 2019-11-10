@@ -1,5 +1,4 @@
 using System;
-using JetBrains.Annotations;
 using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.CSharp;
 using Microsoft.CodeAnalysis.Editing;
@@ -24,13 +23,19 @@ namespace UGF.Code.Generate.Editor.Container
         /// <summary>
         /// Gets initializer of the field.
         /// </summary>
-        [CanBeNull]
-        public SyntaxNode Initializer { get; }
+        public SyntaxNode Initializer { get { return m_initializer ?? throw new ArgumentException("A initializer not specified."); } }
+
+        /// <summary>
+        /// Gets value determines whether initializer is specified.
+        /// </summary>
+        public bool HasInitializer { get { return Initializer != null; } }
 
         /// <summary>
         /// Gets value determines whether this filed will be generated as auto property.
         /// </summary>
         public bool AsAutoProperty { get; }
+
+        private readonly SyntaxNode m_initializer;
 
         /// <summary>
         /// Create container field with the specified name and type.
@@ -41,12 +46,12 @@ namespace UGF.Code.Generate.Editor.Container
         /// <param name="asAutoProperty">The value determines whether this field will be generated as auto property.</param>
         public CodeGenerateContainerField(string name, string type, SyntaxNode initializer = null, bool asAutoProperty = false)
         {
-            if (string.IsNullOrEmpty(name)) throw new ArgumentNullException(nameof(name));
-            if (string.IsNullOrEmpty(type)) throw new ArgumentNullException(nameof(type));
+            if (string.IsNullOrEmpty(name)) throw new ArgumentException("Value cannot be null or empty.", nameof(name));
+            if (string.IsNullOrEmpty(type)) throw new ArgumentException("Value cannot be null or empty.", nameof(type));
 
             Name = name;
             Type = type;
-            Initializer = initializer;
+            m_initializer = initializer;
             AsAutoProperty = asAutoProperty;
         }
 
@@ -59,8 +64,8 @@ namespace UGF.Code.Generate.Editor.Container
             if (generator == null) throw new ArgumentNullException(nameof(generator));
 
             return AsAutoProperty
-                ? generator.AutoPropertyDeclaration(Name, SyntaxFactory.ParseTypeName(Type), Accessibility.Public, DeclarationModifiers.None, Initializer)
-                : generator.FieldDeclaration(Name, SyntaxFactory.ParseTypeName(Type), Accessibility.Public, DeclarationModifiers.None, Initializer);
+                ? generator.AutoPropertyDeclaration(Name, SyntaxFactory.ParseTypeName(Type), Accessibility.Public, DeclarationModifiers.None, m_initializer)
+                : generator.FieldDeclaration(Name, SyntaxFactory.ParseTypeName(Type), Accessibility.Public, DeclarationModifiers.None, m_initializer);
         }
     }
 }

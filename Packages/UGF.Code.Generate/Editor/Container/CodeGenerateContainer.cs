@@ -32,7 +32,7 @@ namespace UGF.Code.Generate.Editor.Container
         /// <param name="asStruct">The value determines whether this container will be generated as struct.</param>
         public CodeGenerateContainer(string name, bool asStruct = false)
         {
-            if (string.IsNullOrEmpty(name)) throw new ArgumentNullException(nameof(name));
+            if (string.IsNullOrEmpty(name)) throw new ArgumentException("Value cannot be null or empty.", nameof(name));
 
             Name = name;
             AsStruct = asStruct;
