@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Reflection;
@@ -67,7 +68,7 @@ namespace UGF.Code.Generate.Editor.Tests.Container
             Assert.False(result6);
         }
 
-        [Test]
+        [Test, Obsolete]
         public void IsValidField()
         {
             BindingFlags flags = BindingFlags.Instance | BindingFlags.NonPublic | BindingFlags.Static;
@@ -97,7 +98,7 @@ namespace UGF.Code.Generate.Editor.Tests.Container
             Assert.False(result6);
         }
 
-        [Test]
+        [Test, Obsolete]
         public void IsValidProperty()
         {
             BindingFlags flags = BindingFlags.Instance | BindingFlags.NonPublic | BindingFlags.Static;
@@ -127,7 +128,7 @@ namespace UGF.Code.Generate.Editor.Tests.Container
             Assert.False(result6);
         }
 
-        [Test]
+        [Test, Obsolete]
         public void GetFields()
         {
             FieldInfo[] fields = CodeGenerateContainerEditorUtility.GetFields(typeof(Target));
@@ -136,7 +137,7 @@ namespace UGF.Code.Generate.Editor.Tests.Container
             Assert.AreEqual(2, fields.Length);
         }
 
-        [Test]
+        [Test, Obsolete]
         public void GetProperties()
         {
             PropertyInfo[] properties = CodeGenerateContainerEditorUtility.GetProperties(typeof(Target));

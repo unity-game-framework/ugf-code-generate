@@ -43,7 +43,7 @@ namespace UGF.Code.Generate.Editor
         public static bool CheckAttributeFromScript(Compilation compilation, string path, Type attributeType)
         {
             if (compilation == null) throw new ArgumentNullException(nameof(compilation));
-            if (string.IsNullOrEmpty(path)) throw new ArgumentNullException(nameof(path));
+            if (string.IsNullOrEmpty(path)) throw new ArgumentException("Value cannot be null or empty.", nameof(path));
             if (attributeType == null) throw new ArgumentNullException(nameof(attributeType));
 
             INamedTypeSymbol typeSymbol = compilation.GetTypeByMetadataName(attributeType.FullName);
@@ -65,7 +65,7 @@ namespace UGF.Code.Generate.Editor
         public static bool CheckAttributeFromScript(Compilation compilation, string path, ITypeSymbol attributeTypeSymbol)
         {
             if (compilation == null) throw new ArgumentNullException(nameof(compilation));
-            if (string.IsNullOrEmpty(path)) throw new ArgumentNullException(nameof(path));
+            if (string.IsNullOrEmpty(path)) throw new ArgumentException("Value cannot be null or empty.", nameof(path));
             if (attributeTypeSymbol == null) throw new ArgumentNullException(nameof(attributeTypeSymbol));
 
             SyntaxTree tree = SyntaxFactory.ParseSyntaxTree(File.ReadAllText(path));
@@ -85,7 +85,7 @@ namespace UGF.Code.Generate.Editor
         /// <param name="label">The additional label.</param>
         public static string GetPathForGeneratedScript(string path, string label = null)
         {
-            if (string.IsNullOrEmpty(path)) throw new ArgumentNullException(nameof(path));
+            if (string.IsNullOrEmpty(path)) throw new ArgumentException("Value cannot be null or empty.", nameof(path));
 
             var builder = new StringBuilder();
             string directory = Path.GetDirectoryName(path);

@@ -26,6 +26,25 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Security
 - Nothing.
 
+## 4.0.0-preview - 2019-11-10
+- [Commits](https://github.com/unity-game-framework/ugf-code-generate/compare/3.1.0...4.0.0-preview)
+- [Milestone](https://github.com/unity-game-framework/ugf-code-generate/milestone/10?closed=1)
+
+### Added
+- Package dependencies:
+    - `com.ugf.editortools`: `0.2.0-preview`.
+- `CodeGenerateContainerField.HasInitializer` to determines whether field has initializer.
+
+### Changed
+- Update to Unity 2019.3.
+
+### Deprecated
+- `CodeGenerateContainerEditorUtility`: `GetFields`, `GetProperties`, `IsValidField` and `IsValidProperty` has been deprecated, use validation instead.
+
+### Removed
+- Package dependencies:
+    - `com.ugf.types`: `2.2.0`.
+
 ## 3.1.0 - 2019-09-14
 - [Commits](https://github.com/unity-game-framework/ugf-code-generate/compare/3.0.3...3.1.0)
 - [Milestone](https://github.com/unity-game-framework/ugf-code-generate/milestone/9?closed=1)
