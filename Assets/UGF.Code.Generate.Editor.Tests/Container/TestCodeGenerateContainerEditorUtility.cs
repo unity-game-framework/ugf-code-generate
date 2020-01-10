@@ -1,7 +1,5 @@
-using System;
 using System.Collections.Generic;
 using System.IO;
-using System.Reflection;
 using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.CSharp;
 using Microsoft.CodeAnalysis.Editing;
@@ -66,84 +64,6 @@ namespace UGF.Code.Generate.Editor.Tests.Container
             Assert.False(result4);
             Assert.False(result5);
             Assert.False(result6);
-        }
-
-        [Test, Obsolete]
-        public void IsValidField()
-        {
-            BindingFlags flags = BindingFlags.Instance | BindingFlags.NonPublic | BindingFlags.Static;
-
-            FieldInfo field0 = typeof(Target).GetField("PublicField");
-            FieldInfo field1 = typeof(Target).GetField("InternalField", flags);
-            FieldInfo field2 = typeof(Target).GetField("ProtectedField", flags);
-            FieldInfo field3 = typeof(Target).GetField("m_privateField", flags);
-            FieldInfo field4 = typeof(Target).GetField("StaticField");
-            FieldInfo field5 = typeof(Target).GetField("ReadOnlyField");
-            FieldInfo field6 = typeof(Target).GetField("ConstField");
-
-            bool result0 = CodeGenerateContainerEditorUtility.IsValidField(field0);
-            bool result1 = CodeGenerateContainerEditorUtility.IsValidField(field1);
-            bool result2 = CodeGenerateContainerEditorUtility.IsValidField(field2);
-            bool result3 = CodeGenerateContainerEditorUtility.IsValidField(field3);
-            bool result4 = CodeGenerateContainerEditorUtility.IsValidField(field4);
-            bool result5 = CodeGenerateContainerEditorUtility.IsValidField(field5);
-            bool result6 = CodeGenerateContainerEditorUtility.IsValidField(field6);
-
-            Assert.True(result0);
-            Assert.False(result1);
-            Assert.False(result2);
-            Assert.False(result3);
-            Assert.False(result4);
-            Assert.False(result5);
-            Assert.False(result6);
-        }
-
-        [Test, Obsolete]
-        public void IsValidProperty()
-        {
-            BindingFlags flags = BindingFlags.Instance | BindingFlags.NonPublic | BindingFlags.Static;
-
-            PropertyInfo property0 = typeof(Target).GetProperty("PublicProp");
-            PropertyInfo property1 = typeof(Target).GetProperty("PrivateProp", flags);
-            PropertyInfo property2 = typeof(Target).GetProperty("OnlySetProp");
-            PropertyInfo property3 = typeof(Target).GetProperty("OnlyGetProp");
-            PropertyInfo property4 = typeof(Target).GetProperty("StaticProp");
-            PropertyInfo property5 = typeof(Target).GetProperty("InternalProp", flags);
-            PropertyInfo property6 = typeof(Target).GetProperty("Item");
-
-            bool result0 = CodeGenerateContainerEditorUtility.IsValidProperty(property0);
-            bool result1 = CodeGenerateContainerEditorUtility.IsValidProperty(property1);
-            bool result2 = CodeGenerateContainerEditorUtility.IsValidProperty(property2);
-            bool result3 = CodeGenerateContainerEditorUtility.IsValidProperty(property3);
-            bool result4 = CodeGenerateContainerEditorUtility.IsValidProperty(property4);
-            bool result5 = CodeGenerateContainerEditorUtility.IsValidProperty(property5);
-            bool result6 = CodeGenerateContainerEditorUtility.IsValidProperty(property6);
-
-            Assert.True(result0);
-            Assert.False(result1);
-            Assert.False(result2);
-            Assert.False(result3);
-            Assert.False(result4);
-            Assert.False(result5);
-            Assert.False(result6);
-        }
-
-        [Test, Obsolete]
-        public void GetFields()
-        {
-            FieldInfo[] fields = CodeGenerateContainerEditorUtility.GetFields(typeof(Target));
-
-            Assert.NotNull(fields);
-            Assert.AreEqual(2, fields.Length);
-        }
-
-        [Test, Obsolete]
-        public void GetProperties()
-        {
-            PropertyInfo[] properties = CodeGenerateContainerEditorUtility.GetProperties(typeof(Target));
-
-            Assert.NotNull(properties);
-            Assert.AreEqual(5, properties.Length);
         }
     }
 
