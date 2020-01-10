@@ -26,6 +26,20 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Security
 - Nothing.
 
+## 4.1.0-preview - 2019-01-10
+- [Commits](https://github.com/unity-game-framework/ugf-code-generate/compare/4.0.0-preview...4.1.0-preview)
+- [Milestone](https://github.com/unity-game-framework/ugf-code-generate/milestone/11?closed=1)
+
+### Added
+- Package dependencies:
+    - `com.ugf.assetpipeline`: `0.2.0-preview`.
+
+### Removed
+- Package dependencies:
+    - `com.ugf.editortools`: `0.2.0-preview`.
+- `Container.External`: replaced by `Container.Info` and `Container.Asset`.
+- Deprecated code.
+
 ## 4.0.0-preview - 2019-11-10
 - [Commits](https://github.com/unity-game-framework/ugf-code-generate/compare/3.1.0...4.0.0-preview)
 - [Milestone](https://github.com/unity-game-framework/ugf-code-generate/milestone/10?closed=1)

@@ -1,16 +1,16 @@
-using System;
+﻿using System;
 using NUnit.Framework;
-using UGF.Code.Generate.Editor.Container.External;
+using UGF.Code.Generate.Editor.Container.Asset;
 using Object = UnityEngine.Object;
 
 namespace UGF.Code.Generate.Editor.Tests.Container.External
 {
-    public class TestCodeGenerateContainerExternalValidation
+    public class TestCodeGenerateContainerAssetValidation
     {
-        private readonly CodeGenerateContainerExternalValidation m_validation = new CodeGenerateContainerExternalValidation();
+        private readonly CodeGenerateContainerAssetValidation m_validation = new CodeGenerateContainerAssetValidation();
         private readonly TestValidation m_testValidation = new TestValidation();
 
-        private class TestValidation : CodeGenerateContainerExternalValidation
+        private class TestValidation : CodeGenerateContainerAssetValidation
         {
             public new bool IsTypeAttribute(Type type)
             {
@@ -25,11 +25,6 @@ namespace UGF.Code.Generate.Editor.Tests.Container.External
             public new bool IsTypeObsolete(Type type)
             {
                 return base.IsTypeObsolete(type);
-            }
-
-            public new bool IsTypeSpecial(Type type)
-            {
-                return base.IsTypeSpecial(type);
             }
         }
 
@@ -73,12 +68,6 @@ namespace UGF.Code.Generate.Editor.Tests.Container.External
 #pragma warning restore 612
 
             Assert.True(result);
-        }
-
-        [Test]
-        public void IsTypeSpecial()
-        {
-            Assert.Ignore();
         }
     }
 

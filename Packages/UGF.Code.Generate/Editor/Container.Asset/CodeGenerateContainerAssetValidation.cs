@@ -2,12 +2,12 @@ using System;
 using System.Reflection;
 using Object = UnityEngine.Object;
 
-namespace UGF.Code.Generate.Editor.Container.External
+namespace UGF.Code.Generate.Editor.Container.Asset
 {
     /// <summary>
     /// Represents external type validation to determines what types can be container and what members valid for generation.
     /// </summary>
-    public class CodeGenerateContainerExternalValidation : CodeGenerateContainerValidation
+    public class CodeGenerateContainerAssetValidation : CodeGenerateContainerValidation
     {
         /// <summary>
         /// Gets or sets value that determines whether to check whether specified type is not an attribute. (Default value is true)
@@ -23,11 +23,6 @@ namespace UGF.Code.Generate.Editor.Container.External
         /// Gets or sets value that determines whether to check whether specified type is not deprecated. (Default value is true)
         /// </summary>
         public bool IsNotObsolete { get; set; } = true;
-
-        /// <summary>
-        /// Gets or sets value that determines whether to check whether specified type is not special type. (Default value is true)
-        /// </summary>
-        public bool IsNotSpecial { get; set; } = true;
 
         public override bool Validate(Type type)
         {
@@ -51,7 +46,7 @@ namespace UGF.Code.Generate.Editor.Container.External
                 return false;
             }
 
-            if (IsNotSpecial && IsTypeSpecial(type))
+            if (type.IsSpecialName)
             {
                 return false;
             }
@@ -84,15 +79,6 @@ namespace UGF.Code.Generate.Editor.Container.External
         protected virtual bool IsTypeObsolete(Type type)
         {
             return type.IsDefined(typeof(ObsoleteAttribute));
-        }
-
-        /// <summary>
-        /// Determines whether specified type is a special type.
-        /// </summary>
-        /// <param name="type">The type to check.</param>
-        protected virtual bool IsTypeSpecial(Type type)
-        {
-            return type.IsSpecialName;
         }
     }
 }

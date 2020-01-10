@@ -1,33 +1,32 @@
 using System;
 using System.IO;
 using NUnit.Framework;
-using UGF.Code.Generate.Editor.Container.External;
+using UGF.Code.Generate.Editor.Container.Info;
 using UnityEngine;
 
 namespace UGF.Code.Generate.Editor.Tests.Container.External
 {
-    public class TestCodeGenerateContainerExternalInfo
+    public class TestCodeGenerateContainerInfo
     {
         private readonly string m_path = "Assets/UGF.Code.Generate.Editor.Tests/Container.External/TestExternalInfo.json";
-        private readonly CodeGenerateContainerExternalInfo m_info = new CodeGenerateContainerExternalInfo
+
+        private readonly CodeGenerateContainerInfo m_info = new CodeGenerateContainerInfo
         {
             TypeName = typeof(TestTargetContainerExternal).AssemblyQualifiedName,
             Members =
             {
-                new CodeGenerateContainerExternalMemberInfo
+                new CodeGenerateContainerInfo.MemberInfo
                 {
-                    Name = "Field",
-                    Active = true
+                    Name = "Field"
                 },
-                new CodeGenerateContainerExternalMemberInfo
+                new CodeGenerateContainerInfo.MemberInfo
                 {
-                    Name = "Field2",
-                    Active = false
+                    Active = false,
+                    Name = "Field2"
                 },
-                new CodeGenerateContainerExternalMemberInfo
+                new CodeGenerateContainerInfo.MemberInfo
                 {
-                    Name = "Property",
-                    Active = true
+                    Name = "Property"
                 }
             }
         };
@@ -45,7 +44,7 @@ namespace UGF.Code.Generate.Editor.Tests.Container.External
         public void Deserialize()
         {
             string text = File.ReadAllText(m_path);
-            var info = JsonUtility.FromJson<CodeGenerateContainerExternalInfo>(text);
+            var info = JsonUtility.FromJson<CodeGenerateContainerInfo>(text);
 
             Assert.NotNull(info);
 
@@ -63,10 +62,10 @@ namespace UGF.Code.Generate.Editor.Tests.Container.External
         [Test]
         public void TryGetMember()
         {
-            bool result0 = m_info.TryGetMember("Field", out CodeGenerateContainerExternalMemberInfo member0);
-            bool result1 = m_info.TryGetMember("Field2", out CodeGenerateContainerExternalMemberInfo member1);
-            bool result2 = m_info.TryGetMember("Property", out CodeGenerateContainerExternalMemberInfo member2);
-            bool result3 = m_info.TryGetMember("Property2", out CodeGenerateContainerExternalMemberInfo member3);
+            bool result0 = m_info.TryGetMember("Field", out CodeGenerateContainerInfo.MemberInfo member0);
+            bool result1 = m_info.TryGetMember("Field2", out CodeGenerateContainerInfo.MemberInfo member1);
+            bool result2 = m_info.TryGetMember("Property", out CodeGenerateContainerInfo.MemberInfo member2);
+            bool result3 = m_info.TryGetMember("Property2", out CodeGenerateContainerInfo.MemberInfo member3);
 
             Assert.True(result0);
             Assert.NotNull(member0);

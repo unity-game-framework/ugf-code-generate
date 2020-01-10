@@ -5,7 +5,7 @@ namespace UGF.Code.Generate.Editor.Tests.Container.External
 {
     public static class TestCodeGenerateContainerExternalEditorMenu
     {
-        [MenuItem("Assets/Create/Test/CodeGenerateContainerExternalInfo", false, 0)]
+        [MenuItem("Assets/Create/Test/CodeGenerateContainerInfo", false, 0)]
         private static void Menu()
         {
             Texture2D icon = AssetPreview.GetMiniTypeThumbnail(typeof(TextAsset));

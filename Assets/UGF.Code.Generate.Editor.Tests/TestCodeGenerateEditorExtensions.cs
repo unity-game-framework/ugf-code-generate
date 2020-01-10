@@ -137,42 +137,5 @@ namespace UGF.Code.Generate.Editor.Tests
             Assert.AreEqual("System.Collections.Generic.List<System.Collections.Generic.List<System.Collections.Generic.List<int>>>", name10);
             Assert.AreEqual("global::System.Collections.Generic.List<global::System.Collections.Generic.List<global::System.Collections.Generic.List<global::System.Int32>>>", name11);
         }
-
-        [Test]
-        public void TryGetTypeByMetadataName()
-        {
-#pragma warning disable 618
-            bool result0 = m_compilation.TryGetTypeByMetadataName(typeof(List<int>), out INamedTypeSymbol typeSymbol0);
-            bool result1 = m_compilation.TryGetTypeByMetadataName(typeof(Vector2), out INamedTypeSymbol typeSymbol1);
-#pragma warning restore 618
-            string result2 = typeSymbol0.ToDisplayString();
-            string result3 = m_generator.TypeExpression(typeSymbol0).ToFullString();
-            string result4 = typeSymbol1.ToDisplayString();
-            string result5 = m_generator.TypeExpression(typeSymbol1).ToFullString();
-
-            Assert.True(result0);
-            Assert.NotNull(typeSymbol0);
-            Assert.True(result1);
-            Assert.NotNull(typeSymbol1);
-            Assert.AreEqual("System.Collections.Generic.List<int>", result2);
-            Assert.AreEqual("global::System.Collections.Generic.List<global::System.Int32>", result3);
-            Assert.AreEqual("UnityEngine.Vector2", result4);
-            Assert.AreEqual("global::UnityEngine.Vector2", result5);
-        }
-
-        [Test]
-        public void TryGetGenericTypeByMetadataName()
-        {
-#pragma warning disable 618
-            bool result0 = m_compilation.TryGetGenericTypeByMetadataName(typeof(List<>).FullName, new[] { typeof(int).FullName }, out INamedTypeSymbol typeSymbol);
-#pragma warning restore 618
-            string result1 = typeSymbol.ToDisplayString();
-            string result2 = m_generator.TypeExpression(typeSymbol).ToFullString();
-
-            Assert.True(result0);
-            Assert.NotNull(typeSymbol);
-            Assert.AreEqual("System.Collections.Generic.List<int>", result1);
-            Assert.AreEqual("global::System.Collections.Generic.List<global::System.Int32>", result2);
-        }
     }
 }
