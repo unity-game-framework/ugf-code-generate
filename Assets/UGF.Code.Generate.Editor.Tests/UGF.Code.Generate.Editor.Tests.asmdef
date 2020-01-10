@@ -2,7 +2,8 @@
     "name": "UGF.Code.Generate.Editor.Tests",
     "references": [
         "GUID:3686f1ecbde070e4dbd247e1291c142f",
-        "GUID:3261026f398ac504fa7bfd69a915d0d0"
+        "GUID:3261026f398ac504fa7bfd69a915d0d0",
+        "GUID:743b97cd2b6c7e24fb8c359e6574a139"
     ],
     "includePlatforms": [
         "Editor"

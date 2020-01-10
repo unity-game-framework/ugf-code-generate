@@ -2,19 +2,22 @@ using System;
 using System.IO;
 using Microsoft.CodeAnalysis;
 using NUnit.Framework;
+using UGF.AssetPipeline.Editor.Asset.Info;
 using UGF.Code.Generate.Editor.Container;
-using UGF.Code.Generate.Editor.Container.External;
+using UGF.Code.Generate.Editor.Container.Asset;
+using UGF.Code.Generate.Editor.Container.Info;
 
 namespace UGF.Code.Generate.Editor.Tests.Container.External
 {
     public class TestCodeGenerateContainerExternalEditorUtility
     {
         private readonly string m_target = "Assets/UGF.Code.Generate.Editor.Tests/Container/TestTargetContainer3.txt";
+        private readonly ICodeGenerateContainerValidation m_validation = CodeGenerateContainerAssetEditorUtility.DefaultValidation;
 
         [Test]
         public void CreateInfo()
         {
-            CodeGenerateContainerExternalInfo info = CodeGenerateContainerExternalEditorUtility.CreateInfo(typeof(TestTargetContainerExternal));
+            CodeGenerateContainerInfo info = CodeGenerateContainerInfoEditorUtility.CreateInfo(typeof(TestTargetContainerExternal), m_validation);
 
             Assert.NotNull(info);
 
@@ -32,11 +35,11 @@ namespace UGF.Code.Generate.Editor.Tests.Container.External
         [Test]
         public void CreateUnit()
         {
-            CodeGenerateContainerExternalInfo info = CodeGenerateContainerExternalEditorUtility.CreateInfo(typeof(Target));
+            CodeGenerateContainerInfo info = CodeGenerateContainerInfoEditorUtility.CreateInfo(typeof(Target), m_validation);
 
             Assert.NotNull(info);
 
-            SyntaxNode unit = CodeGenerateContainerExternalEditorUtility.CreateUnit(info);
+            SyntaxNode unit = CodeGenerateContainerInfoEditorUtility.CreateUnit(info, m_validation);
 
             Assert.NotNull(unit);
 
@@ -49,30 +52,28 @@ namespace UGF.Code.Generate.Editor.Tests.Container.External
         [Test]
         public void CreateContainer()
         {
-            var info = new CodeGenerateContainerExternalInfo
+            var info = new CodeGenerateContainerInfo
             {
                 TypeName = typeof(TestTargetContainerExternal).AssemblyQualifiedName,
                 Members =
                 {
-                    new CodeGenerateContainerExternalMemberInfo
+                    new CodeGenerateContainerInfo.MemberInfo
                     {
-                        Name = "Field",
-                        Active = true
+                        Name = "Field"
                     },
-                    new CodeGenerateContainerExternalMemberInfo
+                    new CodeGenerateContainerInfo.MemberInfo
                     {
-                        Name = "Field2",
-                        Active = false
+                        Active = false,
+                        Name = "Field2"
                     },
-                    new CodeGenerateContainerExternalMemberInfo
+                    new CodeGenerateContainerInfo.MemberInfo
                     {
-                        Name = "Property",
-                        Active = true
+                        Name = "Property"
                     }
                 }
             };
 
-            CodeGenerateContainer container = CodeGenerateContainerExternalEditorUtility.CreateContainer(info);
+            CodeGenerateContainer container = CodeGenerateContainerInfoEditorUtility.CreateContainer(info, m_validation);
 
             Assert.NotNull(container);
             Assert.AreEqual(2, container.Fields.Count);
@@ -86,9 +87,8 @@ namespace UGF.Code.Generate.Editor.Tests.Container.External
         {
             string path = "Assets/UGF.Code.Generate.Editor.Tests/Container.External/TestExternalInfo.json";
 
-            bool result = CodeGenerateContainerExternalEditorUtility.TryGetInfoFromAssetPath(path, out CodeGenerateContainerExternalInfo info);
+            var info = AssetInfoEditorUtility.LoadInfo<CodeGenerateContainerInfo>(path);
 
-            Assert.True(result);
             Assert.NotNull(info);
 
             bool result1 = info.TryGetTargetType(out Type type);
