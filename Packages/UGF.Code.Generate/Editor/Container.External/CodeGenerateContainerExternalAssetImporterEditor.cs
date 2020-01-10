@@ -1,6 +1,6 @@
 using System;
 using System.Collections.Generic;
-using UGF.EditorTools.Editor.IMGUI;
+using UGF.EditorTools.Editor.IMGUI.Types;
 using UnityEditor;
 using UnityEditor.Experimental.AssetImporters;
 using UnityEngine;
@@ -275,7 +275,7 @@ namespace UGF.Code.Generate.Editor.Container.External
 
         private void ValidateType(string typeName)
         {
-            Type type = Type.GetType(typeName);
+            var type = Type.GetType(typeName);
 
             IsTypeValid = type != null && Validation.Validate(type);
         }
