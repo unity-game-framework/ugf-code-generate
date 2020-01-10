@@ -13,15 +13,14 @@ namespace UGF.Code.Generate.Editor.Container.Asset
     {
         public override bool showImportedObject { get; } = false;
 
-        private SerializedProperty m_propertyTypeName;
-        private SerializedProperty m_propertyMembers;
-        private TypesDropdownDrawer m_dropdown;
+        private TypesDropdown m_dropdown;
         private Styles m_styles;
         private bool m_typeValid;
 
         private sealed class Styles
         {
             public GUIContent TypeLabelContent { get; } = new GUIContent("Type");
+            public GUIContent TypeNoneContent { get; } = new GUIContent("None");
             public GUIStyle Box { get; } = "Box";
         }
 
@@ -29,12 +28,11 @@ namespace UGF.Code.Generate.Editor.Container.Asset
         {
             base.OnEnable();
 
-            m_propertyTypeName = extraDataSerializedObject.FindProperty("m_info.m_typeName");
-            m_propertyMembers = extraDataSerializedObject.FindProperty("m_info.m_members");
+            SerializedProperty propertyTypeName = extraDataSerializedObject.FindProperty("m_info.m_typeName");
 
-            ValidateType(m_propertyTypeName.stringValue);
+            ValidateType(propertyTypeName.stringValue);
 
-            m_dropdown = new TypesDropdownDrawer(m_propertyTypeName, OnDropdownTypeCollector);
+            m_dropdown = new TypesDropdown(OnDropdownTypeCollector);
             m_dropdown.Selected += OnDropdownTypeSelected;
         }
 
@@ -47,27 +45,39 @@ namespace UGF.Code.Generate.Editor.Container.Asset
 
             extraDataSerializedObject.UpdateIfRequiredOrScript();
 
-            m_propertyTypeName = extraDataSerializedObject.FindProperty("m_info.m_typeName");
-            m_propertyMembers = extraDataSerializedObject.FindProperty("m_info.m_members");
+            SerializedProperty propertyTypeName = extraDataSerializedObject.FindProperty("m_info.m_typeName");
+            SerializedProperty propertyMembers = extraDataSerializedObject.FindProperty("m_info.m_members");
 
-            // m_dropdown.DrawGUILayout(m_styles.TypeLabelContent);
+            EditorGUILayout.Space();
+            EditorGUILayout.LabelField("Container Info", EditorStyles.boldLabel);
+
+            Rect rect = EditorGUILayout.GetControlRect(true);
+            Rect rectButton = EditorGUI.PrefixLabel(rect, m_styles.TypeLabelContent);
+
+            var type = Type.GetType(propertyTypeName.stringValue);
+            GUIContent typeButtonContent = type != null ? new GUIContent(type.Name) : m_styles.TypeNoneContent;
+
+            if (EditorGUI.DropdownButton(rectButton, typeButtonContent, FocusType.Keyboard))
+            {
+                m_dropdown.Show(rectButton);
+            }
 
             EditorGUILayout.Space();
             EditorGUILayout.LabelField("Type Info", EditorStyles.boldLabel);
 
             if (m_typeValid)
             {
-                EditorGUILayout.HelpBox(m_propertyTypeName.stringValue, MessageType.None);
+                EditorGUILayout.HelpBox(propertyTypeName.stringValue, MessageType.None);
             }
             else
             {
-                if (string.IsNullOrEmpty(m_propertyTypeName.stringValue))
+                if (string.IsNullOrEmpty(propertyTypeName.stringValue))
                 {
                     EditorGUILayout.HelpBox("Type not specified.", MessageType.None);
                 }
                 else
                 {
-                    EditorGUILayout.HelpBox($"Invalid type: `{m_propertyTypeName.stringValue}`.", MessageType.Warning);
+                    EditorGUILayout.HelpBox($"Invalid type: `{propertyTypeName.stringValue}`.", MessageType.Warning);
                 }
             }
 
@@ -76,16 +86,16 @@ namespace UGF.Code.Generate.Editor.Container.Asset
 
             using (new GUILayout.VerticalScope(m_styles.Box))
             {
-                for (int i = 0; i < m_propertyMembers.arraySize; i++)
+                for (int i = 0; i < propertyMembers.arraySize; i++)
                 {
-                    SerializedProperty propertyMember = m_propertyMembers.GetArrayElementAtIndex(i);
+                    SerializedProperty propertyMember = propertyMembers.GetArrayElementAtIndex(i);
                     SerializedProperty propertyActive = propertyMember.FindPropertyRelative("m_active");
                     SerializedProperty propertyName = propertyMember.FindPropertyRelative("m_name");
 
                     propertyActive.boolValue = EditorGUILayout.Toggle(propertyName.stringValue, propertyActive.boolValue);
                 }
 
-                if (m_propertyMembers.arraySize == 0)
+                if (propertyMembers.arraySize == 0)
                 {
                     EditorGUILayout.LabelField("Empty");
                 }
@@ -96,12 +106,12 @@ namespace UGF.Code.Generate.Editor.Container.Asset
                 {
                     if (GUILayout.Button("Select all"))
                     {
-                        SetAllMembersActive(m_propertyMembers, true);
+                        SetAllMembersActive(propertyMembers, true);
                     }
 
                     if (GUILayout.Button("Deselect all"))
                     {
-                        SetAllMembersActive(m_propertyMembers, false);
+                        SetAllMembersActive(propertyMembers, false);
                     }
 
                     GUILayout.FlexibleSpace();
@@ -111,32 +121,68 @@ namespace UGF.Code.Generate.Editor.Container.Asset
             extraDataSerializedObject.ApplyModifiedProperties();
         }
 
-        protected virtual void OnTypeChanged(Type type)
+        protected virtual void OnTypeChanged(Type type = null)
         {
-            CodeGenerateContainerInfo info = CodeGenerateContainerInfoEditorUtility.CreateInfo(type, GetContainerValidation());
+            SerializedProperty propertyMembers = extraDataSerializedObject.FindProperty("m_info.m_members");
 
-            m_propertyMembers.ClearArray();
+            propertyMembers.ClearArray();
 
-            for (int i = 0; i < info.Members.Count; i++)
+            if (type != null)
             {
-                CodeGenerateContainerInfo.MemberInfo memberInfo = info.Members[i];
+                CodeGenerateContainerInfo info = CodeGenerateContainerInfoEditorUtility.CreateInfo(type, GetContainerValidation());
 
-                m_propertyMembers.InsertArrayElementAtIndex(m_propertyMembers.arraySize);
+                for (int i = 0; i < info.Members.Count; i++)
+                {
+                    CodeGenerateContainerInfo.MemberInfo memberInfo = info.Members[i];
 
-                SerializedProperty propertyMember = m_propertyMembers.GetArrayElementAtIndex(i);
-                SerializedProperty propertyActive = propertyMember.FindPropertyRelative("m_active");
-                SerializedProperty propertyName = propertyMember.FindPropertyRelative("m_name");
+                    propertyMembers.InsertArrayElementAtIndex(propertyMembers.arraySize);
 
-                propertyActive.boolValue = true;
-                propertyName.stringValue = memberInfo.Name;
+                    SerializedProperty propertyMember = propertyMembers.GetArrayElementAtIndex(i);
+                    SerializedProperty propertyActive = propertyMember.FindPropertyRelative("m_active");
+                    SerializedProperty propertyName = propertyMember.FindPropertyRelative("m_name");
+
+                    propertyActive.boolValue = true;
+                    propertyName.stringValue = memberInfo.Name;
+                }
             }
 
-            m_propertyMembers.serializedObject.ApplyModifiedProperties();
+            propertyMembers.serializedObject.ApplyModifiedProperties();
         }
 
         protected virtual ICodeGenerateContainerValidation GetContainerValidation()
         {
             return CodeGenerateContainerAssetEditorUtility.DefaultValidation;
+        }
+
+        private IEnumerable<Type> OnDropdownTypeCollector()
+        {
+            ICodeGenerateContainerValidation validation = GetContainerValidation();
+
+            foreach (Type type in TypeCache.GetTypesDerivedFrom<object>())
+            {
+                if (validation.Validate(type))
+                {
+                    yield return type;
+                }
+            }
+        }
+
+        private void OnDropdownTypeSelected(Type type)
+        {
+            SerializedProperty propertyTypeName = extraDataSerializedObject.FindProperty("m_info.m_typeName");
+
+            propertyTypeName.stringValue = type != null ? type.AssemblyQualifiedName : string.Empty;
+            propertyTypeName.serializedObject.ApplyModifiedProperties();
+
+            OnTypeChanged(type);
+            ValidateType(propertyTypeName.stringValue);
+        }
+
+        private void ValidateType(string typeName)
+        {
+            var type = Type.GetType(typeName);
+
+            m_typeValid = type != null && GetContainerValidation().Validate(type);
         }
 
         private static void SetAllMembersActive(SerializedProperty propertyMembers, bool state)
@@ -150,44 +196,6 @@ namespace UGF.Code.Generate.Editor.Container.Asset
             }
 
             propertyMembers.serializedObject.ApplyModifiedProperties();
-        }
-
-        private IEnumerable<Type> OnDropdownTypeCollector()
-        {
-            foreach (Type type in TypeCache.GetTypesDerivedFrom<object>())
-            {
-                if (GetContainerValidation().Validate(type))
-                {
-                    yield return type;
-                }
-            }
-        }
-
-        private void OnDropdownTypeSelected(Type type)
-        {
-            if (type == null)
-            {
-                m_typeValid = false;
-                m_propertyTypeName.stringValue = string.Empty;
-                m_propertyTypeName.serializedObject.ApplyModifiedProperties();
-            }
-            else
-            {
-                m_propertyTypeName.stringValue = type.AssemblyQualifiedName;
-
-                OnTypeChanged(type);
-
-                ValidateType(m_propertyTypeName.stringValue);
-
-                m_propertyTypeName.serializedObject.ApplyModifiedProperties();
-            }
-        }
-
-        private void ValidateType(string typeName)
-        {
-            var type = Type.GetType(typeName);
-
-            m_typeValid = type != null && GetContainerValidation().Validate(type);
         }
     }
 }
