@@ -49,7 +49,7 @@ namespace UGF.Code.Generate.Editor.Container.Asset
             SerializedProperty propertyMembers = extraDataSerializedObject.FindProperty("m_info.m_members");
 
             EditorGUILayout.Space();
-            EditorGUILayout.LabelField("Container Info", EditorStyles.boldLabel);
+            EditorGUILayout.LabelField(InfoName, EditorStyles.boldLabel);
 
             Rect rect = EditorGUILayout.GetControlRect(true);
             Rect rectButton = EditorGUI.PrefixLabel(rect, m_styles.TypeLabelContent);
