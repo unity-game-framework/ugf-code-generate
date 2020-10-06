@@ -2,7 +2,6 @@ using System;
 using System.IO;
 using Microsoft.CodeAnalysis;
 using NUnit.Framework;
-using UGF.AssetPipeline.Editor.Asset.Info;
 using UGF.Code.Generate.Editor.Container;
 using UGF.Code.Generate.Editor.Container.Asset;
 using UGF.Code.Generate.Editor.Container.Info;
@@ -80,26 +79,6 @@ namespace UGF.Code.Generate.Editor.Tests.Container.External
             Assert.True(container.Fields.Exists(x => x.Name == "Field"));
             Assert.False(container.Fields.Exists(x => x.Name == "Field2"));
             Assert.True(container.Fields.Exists(x => x.Name == "Property"));
-        }
-
-        [Test]
-        public void TryGetInfoFromAssetPath()
-        {
-            string path = "Assets/UGF.Code.Generate.Editor.Tests/Container.External/TestExternalInfo.json";
-
-            var info = AssetInfoEditorUtility.LoadInfo<CodeGenerateContainerInfo>(path);
-
-            Assert.NotNull(info);
-
-            bool result1 = info.TryGetTargetType(out Type type);
-
-            Assert.True(result1);
-            Assert.NotNull(type);
-            Assert.AreEqual(typeof(TestTargetContainerExternal), type);
-            Assert.AreEqual(3, info.Members.Count);
-            Assert.True(info.Members.Exists(x => x.Name == "Field"));
-            Assert.True(info.Members.Exists(x => x.Name == "Field2"));
-            Assert.True(info.Members.Exists(x => x.Name == "Property"));
         }
     }
 

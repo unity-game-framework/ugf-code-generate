@@ -22,7 +22,6 @@
         "registry": "https://api.bintray.com/content/unity-game-framework/public"
     },
     "dependencies": {
-        "com.ugf.code.analysis": "3.1.2",
-        "com.ugf.assetpipeline": "0.2.0-preview"
+        "com.ugf.code.analysis": "3.1.2"
     }
 }

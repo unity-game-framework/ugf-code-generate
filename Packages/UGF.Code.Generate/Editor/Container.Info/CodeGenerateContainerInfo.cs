@@ -1,6 +1,5 @@
 using System;
 using System.Collections.Generic;
-using UGF.AssetPipeline.Editor.Asset.Info;
 using UnityEngine;
 
 namespace UGF.Code.Generate.Editor.Container.Info
@@ -9,7 +8,7 @@ namespace UGF.Code.Generate.Editor.Container.Info
     /// Represents container external type information.
     /// </summary>
     [Serializable]
-    public class CodeGenerateContainerInfo : ICodeGenerateContainerInfo, IAssetInfo
+    public class CodeGenerateContainerInfo : ICodeGenerateContainerInfo
     {
         [SerializeField] private string m_typeName;
         [SerializeField] private List<MemberInfo> m_members = new List<MemberInfo>();
