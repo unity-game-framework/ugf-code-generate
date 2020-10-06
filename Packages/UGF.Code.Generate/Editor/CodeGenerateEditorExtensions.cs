@@ -10,7 +10,7 @@ namespace UGF.Code.Generate.Editor
     /// <summary>
     /// Provides extensions for code generate.
     /// </summary>
-    public static partial class CodeGenerateEditorExtensions
+    public static class CodeGenerateEditorExtensions
     {
         /// <summary>
         /// Generates auto property with the specified name, type, accessibility, modifiers and initializer.
