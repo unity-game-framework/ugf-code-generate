@@ -42,7 +42,7 @@ namespace UGF.Code.Generate.Editor
         {
             Generator = generator ?? throw new ArgumentNullException(nameof(generator));
             Attribute = attribute ?? throw new ArgumentNullException(nameof(attribute));
-            Validate = validate != null ? validate : declaration => true;
+            Validate = validate ?? (declaration => true);
         }
 
         /// <summary>
